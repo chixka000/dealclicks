@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "ESNext",
+    "paths": {
+      "@/public/*": ["public/*"],
+      "@/api/*": ["pages/api/*"],
+      "@/styles/*": ["styles/*"]
+    }
+  }
+}
