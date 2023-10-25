@@ -1,8 +1,9 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
+import React from "react";
 
-export default function Home() {
+const Home: React.FC = () => {
   return (
     <div className={styles.container}>
       <Head>
@@ -18,7 +19,7 @@ export default function Home() {
 
         <p className={styles.description}>
           Get started by editing{" "}
-          <code className={styles.code}>pages/index.js</code>
+          <code className={styles.code}>pages/index.tsx</code>
         </p>
 
         <div className={styles.grid}>
@@ -66,4 +67,6 @@ export default function Home() {
       </footer>
     </div>
   );
-}
+};
+
+export default Home;
