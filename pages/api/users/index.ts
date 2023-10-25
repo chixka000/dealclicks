@@ -1,8 +1,9 @@
+
+import { NextApiRequest, NextApiResponse } from "next";
 import connectDatabase from "../database";
-import { NextResponse } from "next/server";
 import User from "../models/user";
 
-export default async function handler(request, response) {
+export default async function handler(request: NextApiRequest, response: NextApiResponse) {
   // await connectDatabase();
   switch (request.method) {
     case "POST":
@@ -15,7 +16,7 @@ export default async function handler(request, response) {
         password: "asdasd",
       });
 
-      return NextResponse.json({ message: "user created" }, { status: 201 });
+      return response.status(201).json({ message: "user created" });
       break;
 
     default:
