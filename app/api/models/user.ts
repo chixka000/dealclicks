@@ -1,10 +1,9 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import { IUser } from "../interfaces/users";
-import bcrypt from "bcryptjs";
-
+import bcrypt from "bcrypt";
 const SALT = 10;
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser & Document>(
   {
     firstName: String,
     lastName: String,
@@ -16,7 +15,7 @@ const userSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
-userSchema.pre("save", async function save(next) {
+userSchema.pre("save", async function (this: IUser & Document, next) {
   if (!this.isModified("password")) return next();
 
   try {
@@ -24,7 +23,8 @@ userSchema.pre("save", async function save(next) {
     this.password = await bcrypt.hash(this.password, salt);
     return next();
   } catch (err) {
-    return next(err);
+    console.log(err);
+    return next(err as Error);
   }
 });
 
