@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function validate(
   request: NextRequest,
   validator: Function
-): Promise<any> {
+): Promise<{hasError?: boolean, errors?: any, data: any}> {
   const data = await request.json();
   const { schema, message } = validator();
 
@@ -31,7 +31,7 @@ export async function validate(
         }
 
         // validate field rules
-        if (schema?.[item]?.rules && schema?.[item]?.rules?.length) {
+        if (data?.[item] && schema?.[item]?.rules && schema?.[item]?.rules?.length) {
           const rulePromises: Promise<void>[] = []; // Specify the type
 
           schema?.[item]?.rules.forEach((rule: Function) => {
@@ -56,7 +56,7 @@ export async function validate(
     })
   );
 
-  if (errors.length) return { hasError: true, errors };
+  if (errors.length) return { hasError: true, errors, data: null };
 
   return { data };
 }

@@ -1,6 +1,6 @@
 import { store } from "../controllers/users";
 
-export const GET = store;
+// export const GET = store;
 
 // export async function handler(request: NextApiRequest, response: NextApiResponse) {
 //   await connectDatabase();

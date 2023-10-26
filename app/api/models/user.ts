@@ -6,21 +6,30 @@ const SALT = 10;
 const userSchema = new Schema<IUser & Document>(
   {
     firstName: String,
-    lastName: String,
+    lastName: { type: String, required: false },
+    fullName: String,
     email: String,
-    password: String,
-    type: String,
-    verified: Boolean,
+    password: { type: String, required: true, select: false },
+    type: { type: String, default: "client" },
+    verified: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
 userSchema.pre("save", async function (this: IUser & Document, next) {
-  if (!this.isModified("password")) return next();
+  // if (!this.isModified("password")) return next();
 
   try {
-    const salt = await bcrypt.genSalt(SALT);
-    this.password = await bcrypt.hash(this.password, salt);
+    if (this.isModified("password")) {
+      const salt = await bcrypt.genSalt(SALT);
+      this.password = await bcrypt.hash(this.password, salt);
+    }
+
+    if (this.isModified("firstName") || this.isModified("lastName")) {
+      this.fullName = `${this.firstName}${
+        this.lastName ? ` ${this.lastName}` : ""
+      }`;
+    }
     return next();
   } catch (err) {
     console.log(err);

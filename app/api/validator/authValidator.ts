@@ -1,20 +1,21 @@
-import { NextResponse } from "next/server";
 import { IAuthValidator } from "../interfaces/validator";
-import { email } from "./rules/rules";
-import { validate } from "./validate";
-
-const schema: IAuthValidator = {
-  email: {
-    required: true,
-    rules: [email],
-  },
-  password: {
-    required: true,
-  },
-};
-
-const message: any = {};
+import { email, password } from "./rules/rules";
 
 export function authValidator(): any {
+  const schema: IAuthValidator = {
+    email: {
+      required: true,
+      rules: [email],
+    },
+    password: {
+      required: true,
+    },
+    remember: {
+      required: false
+    }
+  };
+
+  const message: any = {};
+
   return { schema, message };
 }
