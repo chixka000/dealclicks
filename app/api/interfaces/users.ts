@@ -7,5 +7,8 @@ export interface IUser extends Document {
   email: string;
   password: string;
   type: "admin" | "client";
-  verified: boolean;
+  isVerified: boolean;
+  forgotPasswordToken?: string;
+  forgotPasswordTokenExpiry?: string;
+  stores: Array<any>
 }

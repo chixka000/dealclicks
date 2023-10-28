@@ -7,11 +7,21 @@ async function connectDatabase() {
   }
 
   try {
-    if (!process.env.MONGODB_URI)
-      throw new Error("Mongo database URI required");
+    mongoose.connect(process.env.MONGODB_URI!);
 
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log("MongoDB connected successfully");
+    const connection = mongoose.connection;
+
+    connection.on("connected", () => {
+      console.log("Database connected successfully");
+    });
+
+    connection.on("error", (error) => {
+      console.log(
+        "Database failed to connect. make sure your MongDB is running " + error
+      );
+
+      process.exit();
+    });
   } catch (error) {
     console.error("Error connecting to MongoDB", error);
   }

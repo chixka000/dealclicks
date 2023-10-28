@@ -3,26 +3,26 @@ import { authValidator } from "../validator/authValidator";
 import { validate } from "../validator/validate";
 import { sendErrorResponse } from "../exception/errorResponse";
 import User from "../models/user";
-import connectDatabase from "../database";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export async function login(request: NextRequest) {
   try {
-    // connect to database
-    await connectDatabase();
-
     // validate body
     const { errors, data } = await validate(request, authValidator);
 
     if (errors) return sendErrorResponse(422, errors);
 
     // find user in database and throw error if not exist
-    const user = await User.findOne({ email: data.email });
+    const user = await User.findOne({ email: data.email }).select("+password");
 
     // check if user exist or compare inputed password
-    if (!user || !bcrypt.compareSync(data.password, user.password))
-      return sendErrorResponse(401, "Invalid Credentials.");
+
+    if (!user) return sendErrorResponse(401, "Invalid Credentials.");
+
+    const isSame = await bcrypt.compare(data.password, user.password);
+
+    if (!isSame) return sendErrorResponse(401, "Invalid Credentials.");
 
     const jwtObject = {
       id: user._id,
@@ -42,7 +42,10 @@ export async function login(request: NextRequest) {
     if (data.remember) jwtCookie = `${jwtCookie} Max-Age=2592000000`;
 
     // return token
-    const response = NextResponse.json({ user, token }, { status: 200 });
+    const response = NextResponse.json(
+      { message: "Logged in successfully" },
+      { status: 200 }
+    );
 
     response.cookies.set("token", token, { httpOnly: true });
 

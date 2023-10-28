@@ -2,7 +2,7 @@ import { NextApiResponse } from "next";
 import connectDatabase from "../database";
 import User from "../models/user";
 import { sendErrorResponse } from "../exception/errorResponse";
-import { getDataFromToken } from "@/app/helper/getDataFromToken";
+import { authorize } from "@/app/helper/getDataFromToken";
 import { NextRequest, NextResponse } from "next/server";
 export async function store() {
   // await connectDatabase();
@@ -20,9 +20,11 @@ export async function store() {
 
 export async function me(request: NextRequest) {
   try {
-    const me = await getDataFromToken(request);
+    const me = await authorize(request);
 
-    const user = await User.findOne({ email: me.email! }).select("-password");
+    const user = await User.findOne({ email: me.email! })
+      .populate("stores")
+      .select("-password");
 
     return NextResponse.json({ user }, { status: 200 });
   } catch (error: any) {

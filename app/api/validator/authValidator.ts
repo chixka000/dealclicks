@@ -1,18 +1,20 @@
-import { IAuthValidator } from "../interfaces/validator";
-import { email, password } from "./rules/rules";
+import { IAuthValidator } from "../interfaces";
 
 export function authValidator(): any {
   const schema: IAuthValidator = {
     email: {
+      type: "string",
       required: true,
-      rules: [email],
+      rules: [{ method: "email" }],
     },
     password: {
+      type: "string",
       required: true,
     },
     remember: {
-      required: false
-    }
+      type: "boolean",
+      required: false,
+    },
   };
 
   const message: any = {};

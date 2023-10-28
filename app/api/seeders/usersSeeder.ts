@@ -15,7 +15,7 @@ if (process.env.MONGODB_URI)
       console.log("Database connected.");
     })
     .catch((err) => {
-      console.log("asds", err.message);
+      console.log("Database failed to connect. ", err.message);
     });
 
 // seeder method
@@ -31,16 +31,13 @@ const importUser = async () => {
         email: "dealclicks.admin@gmail.com",
         password: "admin1234",
         type: "admin",
-        verified: true,
+        isVerified: true,
       });
 
     console.log("Seeder users executed.");
 
     process.exit(0);
   } catch (error) {
-    console.log(error);
-    console.log(path.join(__dirname, "../../../.env"));
-
     console.log("Seeders users failed to import.");
 
     process.exit(1);

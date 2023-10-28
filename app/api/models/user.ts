@@ -1,17 +1,24 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { IUser } from "../interfaces/users";
 import bcrypt from "bcrypt";
+import { IUser } from "../interfaces";
 const SALT = 10;
 
-const userSchema = new Schema<IUser & Document>(
+const userSchema = new Schema(
   {
-    firstName: String,
+    firstName: { type: String, required: [true, "Missing firstname field."] },
     lastName: { type: String, required: false },
     fullName: String,
-    email: String,
-    password: { type: String, required: true, select: false },
+    email: { type: String, unique: true },
+    password: {
+      type: String,
+      required: [true, "Missing password field."],
+      select: false,
+    },
     type: { type: String, default: "client" },
-    verified: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false },
+    forgotPasswordToken: String,
+    forgotPasswordTokenExpiry: Date,
+    stores: [{ type: mongoose.Schema.Types.ObjectId, ref: "Store" }],
   },
   { timestamps: true }
 );
@@ -32,7 +39,6 @@ userSchema.pre("save", async function (this: IUser & Document, next) {
     }
     return next();
   } catch (err) {
-    console.log(err);
     return next(err as Error);
   }
 });
