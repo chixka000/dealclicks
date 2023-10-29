@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcrypt";
-import { IUser } from "../interfaces";
+import { IUser } from "../../../interfaces";
 const SALT = 10;
 
 const userSchema = new Schema(

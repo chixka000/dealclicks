@@ -1,4 +1,4 @@
-import { store } from "../controllers/users";
+import { store } from "../../domains/user/controllers/users";
 
 // export const GET = store;
 

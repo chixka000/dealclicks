@@ -1,6 +1,6 @@
 export interface IStore {
-  store_name: string;
-  store_slug?: string;
+  storeName: string;
+  storeSlug?: string;
   description: string;
   owner: string;
 }

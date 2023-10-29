@@ -35,7 +35,7 @@ export interface IAuthValidator {
 }
 
 export interface IStoreValidator {
-  store_name: IValidator;
+  storeName: IValidator;
   description?: IValidator;
 }
 

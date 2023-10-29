@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Rules } from "./rules";
 import { Document, Model } from "mongoose";
-import { RuleMethod } from "../interfaces";
+import { IUser, RuleMethod } from "../../../interfaces";
 
 export async function validate<T extends Document>(
   request: NextRequest,
   validator: Function,
-  params?: any
-): Promise<{ hasError?: boolean; errors?: any; data: any }> {
+  params?: { id: string }
+): Promise<{ hasError?: boolean; errors?: any; data: any; user?: IUser }> {
   // console.log(request.method);
 
   const data = await request.json();
-  const { schema, message } = await validator(request);
+  const { schema, message, user } = await validator(request, data, params);
 
   let errors: Array<any> = [];
 
@@ -89,10 +89,14 @@ export async function validate<T extends Document>(
                     rule.whereNot
                   );
                   if (executeRule?.error) {
+                    console.log();
+
                     errors.push({
                       [item]: {
                         ...executeRule,
-                        message: message?.[item] ?? executeRule?.message,
+                        message:
+                          message?.[`rules.${rule.method}`] ??
+                          executeRule?.message,
                       },
                     });
                   }
@@ -107,7 +111,7 @@ export async function validate<T extends Document>(
     })
   );
 
-  if (errors.length) return { hasError: true, errors, data: null };
+  if (errors.length) return { hasError: true, errors, data: null, user };
 
-  return { data };
+  return { data, user };
 }

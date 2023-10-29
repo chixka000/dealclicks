@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
-import User from "../api/models/user";
+import User from "../../user/models/user";
 
 export async function authorize(
   request: NextRequest,

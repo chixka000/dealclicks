@@ -1,4 +1,4 @@
-import { IAuthValidator } from "../interfaces";
+import { IAuthValidator } from "../../../interfaces";
 
 export function authValidator(): any {
   const schema: IAuthValidator = {

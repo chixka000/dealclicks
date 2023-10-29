@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "data:seed": "ts-node --project tsconfig.seeder.json ./app/api/seeders/usersSeeder.ts",
+    "data:seed": "ts-node --project tsconfig.seeder.json ./app/domains/user/seeders/usersSeeder.ts",
     "cron": "ts-node scripts/cronJob.ts"
   },
   "dependencies": {

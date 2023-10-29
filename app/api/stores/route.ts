@@ -1,5 +1,5 @@
-import { create, index } from "../controllers/stores";
-import connectDatabase from "../database";
+import { create, index } from "../../domains/store/controllers/stores";
+import connectDatabase from "../../domains/shared/config/database";
 
 connectDatabase();
 

@@ -1,5 +1,5 @@
-import { login } from "../../controllers/auth";
-import connectDatabase from "../../database";
+import { login } from "../../../domains/auth/controllers/auth";
+import connectDatabase from "../../../domains/shared/config/database";
 
 connectDatabase();
 

@@ -1,5 +1,5 @@
 import { Document, Model } from "mongoose";
-import { IRuleResponse, RuleMethod } from "../../interfaces";
+import { IRuleResponse, RuleMethod } from "../../../../interfaces";
 import { email, password, unique } from "./rules";
 
 export async function Rules<T extends Document>(
