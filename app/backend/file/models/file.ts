@@ -7,6 +7,8 @@ const fileSchema = new Schema({
   subtype: { type: String, required: true },
   url: { type: String, required: true },
   uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  signature: { type: String, required: true },
+  publicId: { type: String, required: true },
 });
 
 const File = mongoose.models.File || mongoose.model("File", fileSchema);

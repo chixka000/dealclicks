@@ -13,9 +13,10 @@ cloudinary.config({
 interface UploadResult {
   public_id: string;
   url: string;
+  signature: string;
 }
 
-const upload = (file: string, folder: string): Promise<UploadResult> => {
+const uploads = (file: string, folder: string): Promise<UploadResult> => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(
       file,
@@ -23,11 +24,13 @@ const upload = (file: string, folder: string): Promise<UploadResult> => {
         resource_type: "auto",
         folder,
       },
-      (result: any) => {
-        resolve({ public_id: result.public_id, url: result.url });
+      (_, result: any) => {
+        resolve({
+          ...result,
+        });
       }
     );
   });
 };
 
-export { upload, cloudinary };
+export { uploads, cloudinary };
