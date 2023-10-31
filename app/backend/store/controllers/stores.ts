@@ -4,8 +4,8 @@ import { validate } from "../../shared/validator/validate";
 import { storeValidator } from "../validator/storeValidator";
 import StoreService from "../services/storeService";
 import Store from "../models/store";
-import { authorize } from "@/app/domains/shared/utils/getDataFromToken";
 import { slugify } from "@/app/helper/formatter";
+import { authorize } from "../../shared/utils/getDataFromToken";
 
 export async function create(request: NextRequest) {
   try {

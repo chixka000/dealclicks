@@ -1,5 +1,5 @@
-import { upload } from "@/app/domains/file/controllers/file";
-import connectDatabase from "@/app/domains/shared/config/database";
+import { upload } from "@/app/backend/file/controllers/file";
+import connectDatabase from "@/app/backend/shared/config/database";
 
 connectDatabase();
 

@@ -5,7 +5,7 @@ import { sendErrorResponse } from "../../shared/exception/errorResponse";
 import User from "../../user/models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { authorize } from "@/app/domains/shared/utils/getDataFromToken";
+import { authorize } from "../../shared/utils/getDataFromToken";
 
 export async function login(request: NextRequest) {
   try {

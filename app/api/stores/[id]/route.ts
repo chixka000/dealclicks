@@ -1,9 +1,6 @@
-import {
-  destroy,
-  show,
-  update,
-} from "../../../domains/store/controllers/stores";
-import connectDatabase from "../../../domains/shared/config/database";
+import connectDatabase from "@/app/backend/shared/config/database";
+import { destroy, show, update } from "@/app/backend/store/controllers/stores";
+
 
 connectDatabase();
 

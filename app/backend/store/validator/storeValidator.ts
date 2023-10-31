@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { IStore, IStoreValidator, IUser } from "../../../interfaces";
-import { authorize } from "@/app/domains/shared/utils/getDataFromToken";
 import Store from "../models/store";
+import { authorize } from "../../shared/utils/getDataFromToken";
 
 export async function storeValidator(
   request: NextRequest,
