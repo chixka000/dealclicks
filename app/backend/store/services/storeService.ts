@@ -1,4 +1,3 @@
-import { IStore } from "../../../interfaces";
 import { NextRequest } from "next/server";
 import { sendErrorResponse } from "../../shared/exception/errorResponse";
 import User from "../../user/models/user";
@@ -6,6 +5,7 @@ import Store from "../models/store";
 import { slugify } from "@/app/helper/formatter";
 import mongoose from "mongoose";
 import { authorize } from "../../shared/utils/getDataFromToken";
+import { IStore } from "../interfaces";
 
 export default class StoreService {
   async createStore(payload: IStore, request: NextRequest) {

@@ -28,16 +28,6 @@ export interface IValidator {
   maxLength?: Number;
   type: VariableType;
 }
-export interface IAuthValidator {
-  email: IValidator;
-  password: IValidator;
-  remember: IValidator;
-}
-
-export interface IStoreValidator {
-  storeName: IValidator;
-  description?: IValidator;
-}
 
 export interface IRuleResponse {
   error: boolean;

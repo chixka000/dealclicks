@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Rules } from "./rules";
 import { Document, Model } from "mongoose";
-import { IUser, RuleMethod } from "../../../interfaces";
+import { IUser } from "../../user/interfaces";
+import { RuleMethod } from "../interfaces/validator";
 
 export async function validate<T extends Document>(
   request: NextRequest,

@@ -1,5 +1,5 @@
 import { Document, Model } from "mongoose";
-import { IRuleResponse } from "../../../../interfaces";
+import { IRuleResponse } from "../../interfaces/validator";
 
 export function email(value: string): IRuleResponse {
   if (!value)
