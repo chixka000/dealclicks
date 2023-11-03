@@ -12,8 +12,22 @@ type VariableType =
   | "symbol"
   | "bigint";
 
-export type RuleMethod = "email" | "password" | "unique";
+export type RuleMethod =
+  | "email"
+  | "password"
+  | "unique"
+  | "exists"
+  | "minLength"
+  | "maxLength";
 
+export interface IRulePayload {
+  value?: any;
+  model?: any;
+  property?: any;
+  where?: object;
+  whereNot?: object;
+  size?: number;
+}
 export interface IValidator {
   required?: boolean;
   rules?: Array<{
@@ -23,6 +37,7 @@ export interface IValidator {
     property?: any;
     where?: any;
     whereNot?: any;
+    size?: number;
   }>;
   minLength?: Number;
   maxLength?: Number;

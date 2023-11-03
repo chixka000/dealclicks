@@ -33,7 +33,7 @@ export async function login(request: NextRequest) {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      verified: user.verified,
+      verified: user.isVerified,
       type: user.type,
     };
 
@@ -70,8 +70,14 @@ export async function me(request: NextRequest) {
     // validate if the user is logged in
     const me = await authorize(request);
 
+    // if there is no user returned. return a 401 error response
+    if (!me)
+      return sendErrorResponse(401, {
+        error: "You have no permission to execute this request.",
+      });
+
     // get the users information
-    const user = await User.findOne({ email: me.email! })
+    const user = await User.findOne({ email: me.email })
       .populate("stores")
       .select("-password");
 

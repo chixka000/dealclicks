@@ -1,7 +1,7 @@
-import { Document } from "mongoose";
+import { Model, Schema } from "mongoose";
 
-export interface IUser extends Document {
-  _id?: string;
+export interface IUser {
+  _id?: Schema.Types.ObjectId;
   firstName: string;
   lastName?: string;
   fullName: string;
@@ -13,3 +13,5 @@ export interface IUser extends Document {
   forgotPasswordTokenExpiry?: string;
   stores: Array<any>;
 }
+
+export type FileModelType = Model<IUser>;

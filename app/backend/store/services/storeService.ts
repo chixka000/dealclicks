@@ -13,8 +13,14 @@ export default class StoreService {
       // validate user is logged in
       const me = await authorize(request);
 
+      // if there is no user returned. return a 401 error response
+      if (!me)
+        return sendErrorResponse(401, {
+          error: "You have no permission to execute this request.",
+        });
+
       // get user logged in using the is of aboves result
-      const user = await User.findOne({ _id: me?.id });
+      const user = await User.findOne({ _id: me.id });
 
       // return 401 error response if no user found in the query above
       if (!user) {

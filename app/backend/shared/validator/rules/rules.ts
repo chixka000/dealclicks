@@ -1,7 +1,7 @@
 import { Document, Model } from "mongoose";
 import { IRuleResponse } from "../../interfaces/validator";
 
-export function email(value: string): IRuleResponse {
+export function emailRule(value: string): IRuleResponse {
   if (!value)
     return {
       error: true,
@@ -23,7 +23,7 @@ export function email(value: string): IRuleResponse {
   };
 }
 
-export function password(value: string): IRuleResponse {
+export function passwordRule(value: string): IRuleResponse {
   const passwordRegex =
     /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!])([A-Za-z\d@#$%^&+=!]{8,})$/;
 
@@ -39,12 +39,12 @@ export function password(value: string): IRuleResponse {
   };
 }
 
-export async function unique<T extends Document>(
+export async function uniqueRule<T extends Document>(
   value: any,
   model: Model<T>,
   property: any,
-  where?: any,
-  whereNot?: any
+  where?: object,
+  whereNot?: object
 ): Promise<IRuleResponse> {
   try {
     let query = { [property]: value };
@@ -68,6 +68,75 @@ export async function unique<T extends Document>(
       error: true,
       type: "UNIQUE",
       message: `${property} ${value} already exists`,
+    };
+  }
+}
+
+export async function existsRule<T extends Document>(
+  _: any,
+  model: Model<T>,
+  property: any,
+  where?: object,
+  whereNot?: object
+): Promise<IRuleResponse> {
+  try {
+    let query = {};
+
+    if (where) query = { ...query, ...where };
+
+    if (whereNot) query = { ...query, ...whereNot };
+
+    const baseQuery = await model.findOne({ ...query });
+
+    if (!baseQuery)
+      return {
+        error: true,
+        type: "EXISTS",
+        message: `${property} not found`,
+      };
+
+    return { error: false };
+  } catch (error) {
+    return {
+      error: true,
+      type: "EXISTS",
+      message: `${property} not found`,
+    };
+  }
+}
+
+export function minLengthRule(
+  value: any,
+  property: string,
+  size: number
+): IRuleResponse {
+  try {
+    if (value.length < size) throw new Error("Invalid value");
+
+    return { error: false };
+  } catch (error) {
+    return {
+      error: true,
+      type: "MINIMUM_LENGTH",
+      message: `${property} must be atleast ${size} characters`,
+    };
+  }
+}
+
+export function maxLengthRule(
+  value: any,
+  property: string,
+  size: number
+): IRuleResponse {
+  try {
+    if (value.length > size) throw new Error("Invalid value");
+
+    return { error: false };
+  } catch (error) {
+    return {
+      error: true,
+      type: "MAXIMUM_LENGTH",
+      message: `${property} must not exceed ${size} characters`,
     };
   }
 }

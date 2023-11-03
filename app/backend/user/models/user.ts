@@ -1,9 +1,9 @@
-import mongoose, { Schema, Document } from "mongoose";
+import { Schema, Document, model, models } from "mongoose";
 import bcrypt from "bcrypt";
 import { IUser } from "../interfaces";
 const SALT = 10;
 
-const userSchema = new Schema(
+const userSchema = new Schema<IUser>(
   {
     firstName: { type: String, required: [true, "Missing firstname field."] },
     lastName: { type: String, required: false },
@@ -18,7 +18,7 @@ const userSchema = new Schema(
     isVerified: { type: Boolean, default: false },
     forgotPasswordToken: String,
     forgotPasswordTokenExpiry: Date,
-    stores: [{ type: mongoose.Schema.Types.ObjectId, ref: "Store" }],
+    stores: [{ type: Schema.Types.ObjectId, ref: "Store" }],
   },
   { timestamps: true }
 );
@@ -43,6 +43,6 @@ userSchema.pre("save", async function (this: IUser & Document, next) {
   }
 });
 
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+const User = () => model("User", userSchema);
 
-export default User;
+export default (models.User || User()) as ReturnType<typeof User>;
