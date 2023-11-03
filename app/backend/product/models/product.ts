@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 import { IProduct } from "../interfaces/product";
 
 const productSchema = new Schema<IProduct>(
@@ -13,7 +13,6 @@ const productSchema = new Schema<IProduct>(
     },
     description: {
       type: String,
-      default: "",
     },
     stocks: {
       type: Number,
@@ -29,7 +28,6 @@ const productSchema = new Schema<IProduct>(
     slug: {
       type: String,
       slug: "name",
-      unique: true,
     },
   },
   {
@@ -37,6 +35,6 @@ const productSchema = new Schema<IProduct>(
   }
 );
 
-const Product = model<IProduct>("Product", productSchema);
+const Product = () => model<IProduct>("Product", productSchema);
 
-export default Product;
+export default (models.Product || Product()) as ReturnType<typeof Product>;
