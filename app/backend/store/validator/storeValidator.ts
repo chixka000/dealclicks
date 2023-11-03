@@ -12,6 +12,9 @@ export async function storeValidator(
   try {
     const user = await authorize(request);
 
+    if (!user)
+      throw new Error(`You don't have permission to execute this request.`);
+
     const method = request.method;
 
     const schema: IStoreValidator = {

@@ -1,62 +1,41 @@
-import mongoose, { Schema, Document, model } from "mongoose";
-import slug from "mongoose-slug-generator";
-import { autoIncrement } from "mongoose-plugin-autoinc";
-
-mongoose.plugin(slug);
-
-interface IProduct extends Document {
-  name: string;
-  price?: string;
-  description?: string;
-  stocks?: number;
-  url: string;
-  image_url?: string;
-  slug: string;
-}
+import mongoose, { Schema, model } from "mongoose";
+import { IProduct } from "../interfaces/product";
 
 const productSchema = new Schema<IProduct>(
   {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     price: {
-      type: String,
-      default: "0"
+      type: Number,
+      default: 0,
     },
     description: {
       type: String,
-      default: ""
+      default: "",
     },
     stocks: {
       type: Number,
-      default: 0
+      default: 0,
     },
     url: {
       type: String,
-      required: true
+      required: true,
     },
-    image_url: {
-      type: String,
-      default: ""
-    },
+    storeId: { type: Schema.Types.ObjectId, ref: "Store" },
+    owner: { type: Schema.Types.ObjectId, ref: "User" },
+    images: [{ type: Schema.Types.ObjectId, ref: "File" }],
     slug: {
       type: String,
       slug: "name",
-      unique: true
-    }
+      unique: true,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
-
-productSchema.plugin(autoIncrement, {
-  model: "Product",
-  field: "id",
-  startAt: 1,
-  incrementBy: 1
-});
 
 const Product = model<IProduct>("Product", productSchema);
 

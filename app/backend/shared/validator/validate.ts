@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Rules } from "./rules";
 import { Document, Model } from "mongoose";
 import { IUser } from "../../user/interfaces";
 import { RuleMethod } from "../interfaces/validator";
+import Rules from "./rules";
 
 export async function validate<T extends Document>(
   request: NextRequest,
@@ -78,20 +78,22 @@ export async function validate<T extends Document>(
               property: any;
               where?: any;
               whereNot?: any;
+              size?: number;
             }) => {
               rulePromises.push(
                 (async () => {
-                  const executeRule = await Rules(
-                    rule.method,
-                    data?.[item],
-                    rule.model,
-                    rule.property,
-                    rule.where,
-                    rule.whereNot
-                  );
-                  if (executeRule?.error) {
-                    console.log();
+                  const rules = new Rules();
 
+                  const executeRule = await rules[rule.method]({
+                    value: data?.[item],
+                    model: rule.model,
+                    property: rule.property,
+                    where: rule.where,
+                    whereNot: rule.whereNot,
+                    size: rule.size,
+                  });
+
+                  if (executeRule?.error) {
                     errors.push({
                       [item]: {
                         ...executeRule,

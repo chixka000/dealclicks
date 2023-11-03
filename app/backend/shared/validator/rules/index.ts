@@ -1,30 +1,56 @@
-import { Document, Model } from "mongoose";
-import { email, password, unique } from "./rules";
-import { IRuleResponse, RuleMethod } from "../../interfaces/validator";
+import { Document } from "mongoose";
+import {
+  emailRule,
+  existsRule,
+  maxLengthRule,
+  minLengthRule,
+  passwordRule,
+  uniqueRule,
+} from "./rules";
+import { IRulePayload, IRuleResponse } from "../../interfaces/validator";
 
-export async function Rules<T extends Document>(
-  method: RuleMethod,
-  value: any,
-  model: Model<T>,
-  property: any,
-  where?: any,
-  whereNot?: any
-) {
-  try {
-    let result: IRuleResponse | Promise<IRuleResponse> = { error: false };
-    switch (method) {
-      case "email":
-        result = email(value);
-        break;
-      case "password":
-        result = password(value);
-        break;
-      case "unique":
-        result = await unique(value, model, property, where, whereNot);
-      default:
-        break;
-    }
+export default class Rules<T extends Document> {
+  email(parameters: IRulePayload): IRuleResponse {
+    return emailRule(parameters.value);
+  }
 
-    return result;
-  } catch (error: any) {}
+  password(parameters: IRulePayload): IRuleResponse {
+    return passwordRule(parameters.value);
+  }
+
+  async unique(parameters: IRulePayload): Promise<IRuleResponse> {
+    return await uniqueRule(
+      parameters.value,
+      parameters.model,
+      parameters.property,
+      parameters.where,
+      parameters.whereNot
+    );
+  }
+
+  async exists(parameters: IRulePayload): Promise<IRuleResponse> {
+    return await existsRule(
+      parameters.value,
+      parameters.model,
+      parameters.property,
+      parameters.where,
+      parameters.whereNot
+    );
+  }
+
+  maxLength(parameters: IRulePayload): IRuleResponse {
+    return maxLengthRule(
+      parameters.value,
+      parameters.property,
+      parameters.size || 20
+    );
+  }
+
+  minLength(parameters: IRulePayload): IRuleResponse {
+    return minLengthRule(
+      parameters.value,
+      parameters.property,
+      parameters.size || 2
+    );
+  }
 }
