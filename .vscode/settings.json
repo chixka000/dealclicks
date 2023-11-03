@@ -1,0 +1,7 @@
+{
+    "editor.autoIndent": "brackets",
+    "workbench.settings.useSplitJSON": true,
+    "editor.fontVariations": false,
+    "workbench.settings.openDefaultKeybindings": true,
+    "workbench.settings.openDefaultSettings": true
+}
