@@ -21,7 +21,7 @@ export const Menu = () => {
 
   return (
     <Fragment>
-      <header className="border-b bg-white font-sans">
+      <header className="border-b bg-white">
         <section className="flex sm:items-center relative px-10 min-h-[75px] bg-header drop-shadow-xl ">
           <Link href={"/"}>
             <Image
@@ -35,9 +35,8 @@ export const Menu = () => {
 
           <ul className="flex space-x-8 lg:absolute lg:top-2/4 lg:left-2/4 lg:-translate-x-1/2 lg:-translate-y-1/2 max-lg:hidden">
             {subMenu.map((item, index) => (
-              <li>
+              <li key={index}>
                 <Link
-                  key={index}
                   href={item.url}
                   className="font-bold text-white hover:text-light-theme text-[15px]"
                 >
@@ -60,11 +59,10 @@ export const Menu = () => {
         <div className="flex flex-wrap items-center py-1 relative drop-shadow-xl ">
           <ul className="flex justify-center lg:space-x-8 max-lg:space-y-2 max-lg:block w-full">
             {Array.from({ length: 10 }, (_, idx) => (
-              <>
+              <Fragment key={idx}>
                 {menu.map((item, index) => (
-                  <li className="max-lg:py-2">
+                  <li className="max-lg:py-2" key={index}>
                     <Link
-                      key={index}
                       href={item.url}
                       className="lg:hover:text-light-theme font-bold text-dark-theme text-[14px] block"
                     >
@@ -72,7 +70,7 @@ export const Menu = () => {
                     </Link>
                   </li>
                 ))}
-              </>
+              </Fragment>
             ))}
           </ul>
         </div>

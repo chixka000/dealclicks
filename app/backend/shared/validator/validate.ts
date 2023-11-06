@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { Document, Model } from "mongoose";
 import { IUser } from "../../user/interfaces";
 import { RuleMethod } from "../interfaces/validator";

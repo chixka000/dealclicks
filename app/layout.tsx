@@ -1,9 +1,5 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './style/globals.css'
-import DefaultLayout from './layout/DefaultLayout'
-
-const inter = Inter({ subsets: ['latin'] })
+import "./style/globals.css";
+import DefaultLayout from "./layout/DefaultLayout";
 
 export default function RootLayout(props: {
   children:
@@ -18,11 +14,9 @@ export default function RootLayout(props: {
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <DefaultLayout>
-          {props.children}
-        </DefaultLayout>
+      <body className="font-void">
+        <DefaultLayout>{props.children}</DefaultLayout>
       </body>
     </html>
-  )
+  );
 }
