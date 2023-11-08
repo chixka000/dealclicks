@@ -100,3 +100,7 @@ body {
   transform: translate(-50%, -50%);
   color: white;
 }
+.hover-box:hover {
+  --tw-shadow-color: #04c3fd;
+    --tw-shadow: var(--tw-shadow-colored);
+}

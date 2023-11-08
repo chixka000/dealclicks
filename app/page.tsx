@@ -1,7 +1,19 @@
+"use client"
+
 import Image from "next/image";
 import noImage from "../public/images/sample.jpg";
+import React, { useEffect, useState } from "react";
 
 export default function Home() {
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null; // Don't render on the server
+  }
   return (
     <main className="flex min-h-screen flex-col">
       {/* // ! Banner */}
@@ -42,17 +54,23 @@ export default function Home() {
 
         {Array.from({ length: 5 }, (_, idx) => (
           <div className="rounded-xl w-[250px] h-[290px] shadow-lg mx-auto mt-10 bg-gradient-to-r p-[6px] hover:from-[#04c3fd] from-light-theme hover:via-[#9333EA] via-none  hover:to-[#263852] to-dark-theme">
-            <div className="flex flex-col justify-between h-full bg-white text-white rounded-lg">
+            <div className="relative flex flex-col h-full bg-white text-white rounded-lg">
               <div className="relative shadow-md overflow-hidden text-gray-700 bg-white shadow-lg rounded-t-xl bg-clip-border w-full">
                 <Image alt={"sample"} src={noImage} />
               </div>
               <div className="p-6 text-center">
-                <h4 className="block mb-2 text-2xl antialiased font-bold leading-snug tracking-normal text-dark-theme">
+
+                {/* <h4 className="block mb-2 text-2xl antialiased font-bold leading-snug tracking-normal text-dark-theme">
                   Click Me!
-                </h4>
-                <p className="block text-bold antialiased font-medium leading-relaxed text-dark-theme">
+                </h4> */}
+                <p className="block text-bold antialiased text-[20px] font-medium leading-relaxed text-dark-theme">
                   CEO / Mark Roda
                 </p>
+                <div className="absolute grid overflow-hidden text-white shadow-lg  hover:shadow-light-theme h-28 place-items-center rounded-xl bg-white bg-clip-border shadow-2xl bottom-[-57px] w-full right-0">
+                  <h3 className="block font-sans text-3xl antialiased font-semibold leading-snug tracking-normal text-dark-theme">
+                    Click Me!
+                  </h3>
+                </div>
               </div>
             </div>
           </div>
