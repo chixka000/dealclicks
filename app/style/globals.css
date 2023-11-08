@@ -35,7 +35,7 @@ body {
 }
 
 .bg-header {
-  background: linear-gradient(90deg, white, #25809b, #263852) !important;
+  background: linear-gradient(90deg,#3f8ea5, #5fb5cf,  white, #5fb5cf, #3f8ea5) !important;
   color: white; /* Text color on the gradient background */
 }
 
