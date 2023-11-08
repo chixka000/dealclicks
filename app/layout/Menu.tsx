@@ -24,7 +24,7 @@ export const Menu = () => {
 
   return (
     <Fragment>
-      <header className="border-b bg-white font-sans">
+      <header className="border-b bg-white">
         <section className="flex items-center justify-between relative px-10 min-h-[75px] shadow-md">
           <Link href={"/"}>
             <Image
@@ -40,31 +40,26 @@ export const Menu = () => {
               <li key={index}>
                 <Link
                   href={item.url}
-                  className="font-bold text-black hover:text-light-theme text-[15px]"
+                  className="font-bold text-3xl text-dark-theme hover:text-light-theme text-[15px]"
                 >
                   {item.name}
                 </Link>
               </li>
             ))}
           </ul>
-
-
-
-          {/* <div className="lg:absolute lg:right-10 flex items-center ml-auto max-lg:justify-end">
-            <div className="flex ml-auto lg:order-2">
-              <button className="hover:text-light-theme">
-                <FiSearch size={25} />
-              </button>
-              <button className="ml-7 hover:text-light-theme lg:hidden">
-                <RxHamburgerMenu size={25} />
-              </button>
-            </div>asd
-          </div> */}
           <div className="flex items-center gap-4">
-            <button onClick={handleShow} className="border-2 border-dark-theme p-2 duration-300 hover:bg-dark-theme  rounded-full text-dark-theme hover:text-light-theme">
-              <LuSearch size={20} />
-            </button>
-            <button className="bg-dark-theme hover:bg-light-theme text-light-theme hover:text-dark-theme py-2 px-6 hover:py-3 duration-300 rounded-3xl  font-bold">LET'S TALK</button>
+            <div className="rounded-full shadow-lg mx-auto duration-1000 bg-gradient-to-r p-[6px] hover:from-[#04c3fd] from-light-theme hover:via-[#9333EA] via-none  hover:to-[#263852] to-dark-theme">
+              <div className="flex flex-col justify-between h-full bg-white text-white rounded-full">
+                <button onClick={handleShow} className="  text-dark-theme p-2 rounded-full text-dark-theme">
+                  <LuSearch size={20} />
+                </button>
+              </div>
+            </div>
+            <div className="rounded-full shadow-lg mx-auto duration-300 bg-gradient-to-r p-[6px] hover:from-[#04c3fd] from-light-theme hover:via-[#9333EA] via-none  hover:to-[#263852] to-dark-theme">
+              <div className="flex flex-col justify-between h-full bg-white text-white rounded-full">
+                <button className="text-dark-theme py-1 px-6 duration-300 rounded-3xl text-2xl tracking-wider font-bold">Let's Talk</button>
+              </div>
+            </div>
           </div>
         </section>
         <div className={`flex flex-wrap items-center py-2 relative drop-shadow-xl transition-transform duration-500`}>
@@ -75,7 +70,7 @@ export const Menu = () => {
                   <li className="max-lg:py-2" key={index}>
                     <Link
                       href={item.url}
-                      className="lg:hover:text-light-theme font-bold text-dark-theme text-[16px] block"
+                      className="lg:hover:text-light-theme font-bold text-dark-theme text-[20px] block tracking-wider"
                     >
                       {item.name}
                     </Link>

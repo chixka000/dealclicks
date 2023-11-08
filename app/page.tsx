@@ -12,28 +12,53 @@ export default function Home() {
           </button>
         </div>
       </div>
+      <div className="bg-[#f6f6f6]">
+        <div className="grid grid-cols-3 gap-4 py-16 container mx-auto px-auto">
+          {Array.from({ length: 3 }, (_, idx) => (
+            <div className="relative shadow-2xl grid h-[40rem] w-full max-w-[28rem] flex-col items-end justify-center overflow-hidden rounded-xl bg-white bg-clip-border text-center text-gray-700">
+              <div className="absolute inset-0 m-0 h-full w-full overflow-hidden rounded-none bg-transparent bg-[url('https://images.unsplash.com/photo-1552960562-daf630e9278b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80')] bg-cover bg-clip-border bg-center text-gray-700 shadow-none">
+                <div className="absolute inset-0 w-full h-full to-bg-black-10 bg-gradient-to-t from-black/80 via-black/50"></div>
+              </div>
+              <div className="relative p-6 px-6 py-14 md:px-12">
+                <h2 className="mb-6 block font-sans text-4xl font-medium leading-[1.5] tracking-normal text-white antialiased">
+                  Deal to click to check the details
+                </h2>
+                <h5 className="block mb-4 font-sans text-xl antialiased font-semibold leading-snug tracking-normal text-gray-400">
+                  Mark Roda
+                </h5>
+                <img
+                  alt="tania andrew"
+                  src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
+                  className="relative inline-block h-[74px] w-[74px] rounded-full border-2 border-white object-cover object-center"
+                />
+              </div>
+            </div>
+          ))}
+
+        </div>
+      </div>
       {/* // * Content */}
-      <div className="flex items-center w-full justify-between py-16 gap-8 container mx-auto px-4">
-        {Array.from({ length: 3 }, (_, idx) => (
-          <div className="flex flex-col text-center">
-            <div className="relative">
-              <Image alt={"sample"} src={noImage} />
-              <span className="absolute bottom-0 left-0 right-0 bg-black text-white text-center p-2 bg-opacity-50">
-                Click Me!
-              </span>
+      <div className="flex items-center w-full justify-between py-16 container mx-auto px-4">
+
+        {Array.from({ length: 5 }, (_, idx) => (
+          <div className="rounded-xl w-[250px] h-[290px] shadow-lg mx-auto mt-10 bg-gradient-to-r p-[6px] hover:from-[#04c3fd] from-light-theme hover:via-[#9333EA] via-none  hover:to-[#263852] to-dark-theme">
+            <div className="flex flex-col justify-between h-full bg-white text-white rounded-lg">
+              <div className="relative shadow-md overflow-hidden text-gray-700 bg-white shadow-lg rounded-t-xl bg-clip-border w-full">
+                <Image alt={"sample"} src={noImage} />
+              </div>
+              <div className="p-6 text-center">
+                <h4 className="block mb-2 text-2xl antialiased font-bold leading-snug tracking-normal text-dark-theme">
+                  Click Me!
+                </h4>
+                <p className="block text-bold antialiased font-medium leading-relaxed text-dark-theme">
+                  CEO / Mark Roda
+                </p>
+              </div>
             </div>
           </div>
         ))}
       </div>
-      <div className="bg-[#f6f6f6]">
-        <div className="grid grid-cols-3 gap-4 py-16 container mx-auto px-auto">
-          {Array.from({ length: 9 }, (_, idx) => (
-            <div className="flex flex-col">
-              <Image alt={"sample"} src={noImage} />
-            </div>
-          ))}
-        </div>
-      </div>
+
     </main>
   );
 }
