@@ -16,6 +16,9 @@ const config: Config = {
         "dark-theme": "#263852",
         "light-theme": "#04c3fd",
       },
+      fontFamily: {
+        void: ["Void"],
+      },
     },
   },
   plugins: [],
