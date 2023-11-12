@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendErrorResponse } from "../../shared/exception/errorResponse";
 import { authorize } from "../../shared/utils/getDataFromToken";
-import { validate } from "../../shared/validator/validate";
 import { categoryValidator } from "../validator/categoryValidator";
 import Category from "../models/category";
-import { ObjectId } from "mongoose";
+import { ObjectId, models } from "mongoose";
+import { validate } from "../../shared/validator";
 
 export async function store(request: NextRequest) {
   try {
@@ -12,12 +12,12 @@ export async function store(request: NextRequest) {
     const { errors, data, user } = await validate(request, categoryValidator);
 
     // check if there is errors in the validate response
-    if (errors) return sendErrorResponse(422, errors);
+    if (errors.length) return sendErrorResponse(422, errors);
 
     // create document in the collection
     const category = await Category.create({
       name: data.name,
-      storeId: data.storeId,
+      store: data.storeId,
       createdBy: user!._id,
     });
 
@@ -51,7 +51,7 @@ export async function index(
 
     // execute query
     const categories = await Category.find({
-      storeId: params.storeId,
+      store: params.storeId,
       createdBy: user._id,
       deleted: false,
     })
@@ -86,7 +86,7 @@ export async function show(
     // execute query
     const category = await Category.findOne({
       _id: params.categoryId,
-      storeId: params.storeId,
+      store: params.storeId,
       deleted: false,
     })
       .select("-deleted")
@@ -118,12 +118,13 @@ export async function update(
     });
 
     // check if there is errors in the validate response
-    if (errors) return sendErrorResponse(422, errors);
+    if (errors.length) return sendErrorResponse(422, errors);
 
     const { storeId, categoryId } = params;
     // initial isAdmin to check the request is from admin endpoint or client endpoint
     const isAdmin =
-      request.nextUrl.pathname === `/api/admin/category/${storeId}/${categoryId}`
+      request.nextUrl.pathname ===
+      `/api/admin/category/${storeId}/${categoryId}`
         ? true
         : false;
 
@@ -146,7 +147,7 @@ export async function update(
 
     // assign the new value for the Category model properties
     category.name = data.name;
-    category.storeId = data.storeId;
+    category.store = data.storeId;
 
     // save the new data in the collection
     await category.save();
@@ -182,7 +183,7 @@ export async function destroy(
     // execute query
     const category = await Category.findOne({
       _id: params.categoryId,
-      storeId: params.storeId,
+      store: params.storeId,
       deleted: false,
     });
 

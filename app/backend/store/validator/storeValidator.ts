@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
-import Store from "../models/store";
 import { authorize } from "../../shared/utils/getDataFromToken";
 import { IStore, IStoreValidator } from "../interfaces";
 import { IUser } from "../../user/interfaces";
+import { Schema } from "../../shared/validator";
 
 export async function storeValidator(
   request: NextRequest,
@@ -18,14 +18,12 @@ export async function storeValidator(
     const method = request.method;
 
     const schema: IStoreValidator = {
-      storeName: {
-        type: "string",
-        required: true,
+      storeName: Schema.String({
+        trim: true,
         rules: [
           {
             method: "unique",
-            property: "storeName",
-            model: Store,
+            model: "Store",
             where: { storeName: data.storeName },
             whereNot:
               method === "PATCH" || method === "PUT"
@@ -33,15 +31,17 @@ export async function storeValidator(
                 : {},
           },
         ],
-      },
-      description: { type: "string", required: false },
+      }),
+      description: Schema.StringOptional({ trim: true }),
     };
 
     const message: any = {
-      "rules.unique":
-        method === "POST"
-          ? "You already created this store."
-          : `You already have a store with this name.`,
+      storeName: {
+        unique:
+          method === "POST"
+            ? "You already created this store."
+            : `You already have a store with this name.`,
+      },
     };
 
     return { schema, message, user };

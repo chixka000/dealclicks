@@ -1,20 +1,11 @@
+import { Schema } from "../../shared/validator";
 import { IAuthValidator } from "../interfaces";
 
 export function authValidator(): any {
   const schema: IAuthValidator = {
-    email: {
-      type: "string",
-      required: true,
-      rules: [{ method: "email" }],
-    },
-    password: {
-      type: "string",
-      required: true,
-    },
-    remember: {
-      type: "boolean",
-      required: false,
-    },
+    email: Schema.String({ trim: true, rules: [{ method: "email" }] }),
+    password: Schema.String(),
+    remember: Schema.BooleanOptional(),
   };
 
   const message: any = {};

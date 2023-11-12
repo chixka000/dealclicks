@@ -1,13 +1,14 @@
 import { NextRequest } from "next/server";
-import { ICategory, ICategoryValidator } from "../interfaces";
+import { ICategory, ICategoryPayload, ICategoryValidator } from "../interfaces";
 import { IUser } from "../../user/interfaces";
 import Category from "../models/category";
 import Store from "../../store/models/store";
 import { authorize } from "../../shared/utils/getDataFromToken";
+import { Schema } from "../../shared/validator";
 
 export async function categoryValidator(
   request: NextRequest,
-  data: ICategory,
+  data: ICategoryPayload,
   params?: { id: string }
 ): Promise<{ schema: ICategoryValidator; message: any; user: IUser }> {
   try {
@@ -23,15 +24,13 @@ export async function categoryValidator(
     // define schema for the data
 
     const schema: ICategoryValidator = {
-      name: {
-        type: "string",
-        required: true,
+      name: Schema.String({
+        trim: true,
         rules: [
           {
             method: "unique",
-            property: "name",
-            model: Category,
-            where: { name: data.name, storeId: data.storeId },
+            model: "Category",
+            where: { name: data.name, store: data.storeId },
             whereNot:
               method === "PATCH" || method === "PUT"
                 ? { _id: { $ne: params!.id } }
@@ -39,22 +38,19 @@ export async function categoryValidator(
           },
           {
             method: "minLength",
-            property: "name",
           },
         ],
-      },
-      storeId: {
-        type: "string",
-        required: true,
+      }),
+      storeId: Schema.String({
+        trim: true,
         rules: [
           {
             method: "exists",
-            property: "storeId",
-            model: Store,
+            model: "Store",
             where: { _id: data.storeId, owner: user._id },
           },
         ],
-      },
+      }),
     };
 
     // add message (optional)

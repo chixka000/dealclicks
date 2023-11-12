@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authValidator } from "../validator/authValidator";
-import { validate } from "../../shared/validator/validate";
 import { sendErrorResponse } from "../../shared/exception/errorResponse";
 import User from "../../user/models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { authorize } from "../../shared/utils/getDataFromToken";
+import { validate } from "../../shared/validator";
 
 export async function login(request: NextRequest) {
   try {
@@ -13,7 +13,7 @@ export async function login(request: NextRequest) {
     const { errors, data } = await validate(request, authValidator);
 
     // return 422 error response if there is error in validation
-    if (errors) return sendErrorResponse(422, errors);
+    if (errors.length) return sendErrorResponse(422, errors);
 
     // find user in collection with email equal to data.email(email sent by the client)
     const user = await User.findOne({ email: data.email }).select("+password");

@@ -5,12 +5,11 @@ import { FiSearch } from "react-icons/fi";
 import { LuSearch } from "react-icons/lu";
 
 export const Menu = () => {
-  const [isShow, setShow] = React.useState(false)
+  const [isShow, setShow] = React.useState(false);
 
   const handleShow = () => {
-    setShow(!isShow)
-
-  }
+    setShow(!isShow);
+  };
   const subMenu = [
     { name: "Best Seller", url: "" },
     { name: "About Us", url: "" },
@@ -50,19 +49,26 @@ export const Menu = () => {
           <div className="flex items-center gap-4">
             <div className="rounded-full shadow-lg mx-auto duration-1000 bg-gradient-to-r p-[6px] hover:from-[#04c3fd] from-light-theme hover:via-[#9333EA] via-none  hover:to-[#263852] to-dark-theme">
               <div className="flex flex-col justify-between h-full bg-white text-white rounded-full">
-                <button onClick={handleShow} className="  text-dark-theme p-2 rounded-full text-dark-theme">
+                <button
+                  onClick={handleShow}
+                  className="  text-dark-theme p-2 rounded-full text-dark-theme"
+                >
                   <LuSearch size={20} />
                 </button>
               </div>
             </div>
             <div className="rounded-full shadow-lg mx-auto duration-300 bg-gradient-to-r p-[6px] hover:from-[#04c3fd] from-light-theme hover:via-[#9333EA] via-none  hover:to-[#263852] to-dark-theme">
               <div className="flex flex-col justify-between h-full bg-white text-white rounded-full">
-                <button className="text-dark-theme py-1 px-6 duration-300 rounded-3xl text-2xl tracking-wider font-bold">Let's Talk</button>
+                <button className="text-dark-theme py-1 px-6 duration-300 rounded-3xl text-2xl tracking-wider font-bold">
+                  {"Let's Talk"}
+                </button>
               </div>
             </div>
           </div>
         </section>
-        <div className={`flex flex-wrap items-center py-2 relative drop-shadow-xl transition-transform duration-500`}>
+        <div
+          className={`flex flex-wrap items-center py-2 relative drop-shadow-xl transition-transform duration-500`}
+        >
           <ul className="flex justify-center lg:space-x-8 max-lg:space-y-2 max-lg:block w-full">
             {Array.from({ length: 10 }, (_, idx) => (
               <Fragment key={idx}>

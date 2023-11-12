@@ -18,7 +18,7 @@ const categorySchema = new Schema<
   {
     name: { type: String, required: true },
     createdBy: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
-    storeId: { type: Schema.Types.ObjectId, required: true, ref: 'Store' },
+    store: { type: Schema.Types.ObjectId, required: true, ref: 'Store' },
     deleted: {type: Boolean, required: false, default: false}
   },
   {
@@ -42,7 +42,7 @@ categorySchema.query.populateRelations = function populateRelations(
           this.populate("createdBy");
           break;
         case "store":
-          this.populate("storeId");
+          this.populate("store");
           break;
         default:
           break;

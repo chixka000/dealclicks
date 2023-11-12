@@ -1,4 +1,4 @@
-import { Document, Model } from "mongoose";
+import { Document, Model, models } from "mongoose";
 import { IRuleResponse } from "../../interfaces/validator";
 
 export function emailRule(value: string): IRuleResponse {
@@ -39,21 +39,37 @@ export function passwordRule(value: string): IRuleResponse {
   };
 }
 
-export async function uniqueRule<T extends Document>(
+export async function uniqueRule(
   value: any,
-  model: Model<T>,
-  property: any,
+  property: string,
+  model?: string,
   where?: object,
   whereNot?: object
 ): Promise<IRuleResponse> {
   try {
+    if (!model)
+      return {
+        error: true,
+        type: "UNIQUE",
+        message: `Model not found.`,
+      };
+
+    const modelInstance = models[model];
+
+    if (!modelInstance)
+      return {
+        error: true,
+        type: "UNIQUE",
+        message: `Model not found.`,
+      };
+
     let query = { [property]: value };
 
     if (where) query = { ...query, ...where };
 
     if (whereNot) query = { ...query, ...whereNot };
 
-    const baseQuery = await model.findOne(query);
+    const baseQuery = await modelInstance.findOne(query);
 
     if (baseQuery)
       return {
@@ -72,21 +88,37 @@ export async function uniqueRule<T extends Document>(
   }
 }
 
-export async function existsRule<T extends Document>(
+export async function existsRule(
   _: any,
-  model: Model<T>,
-  property: any,
+  property: string,
+  model?: string,
   where?: object,
   whereNot?: object
 ): Promise<IRuleResponse> {
   try {
+    if (!model)
+      return {
+        error: true,
+        type: "UNIQUE",
+        message: `Model not found.`,
+      };
+
+    const modelInstance = models[model];
+
+    if (!modelInstance)
+      return {
+        error: true,
+        type: "EXISTS",
+        message: `Model not found.`,
+      };
+
     let query = {};
 
     if (where) query = { ...query, ...where };
 
     if (whereNot) query = { ...query, ...whereNot };
 
-    const baseQuery = await model.findOne({ ...query });
+    const baseQuery = await modelInstance.findOne({ ...query });
 
     if (!baseQuery)
       return {

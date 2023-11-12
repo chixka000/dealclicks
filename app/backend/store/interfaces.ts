@@ -1,9 +1,11 @@
-import mongoose from "mongoose";
-import { IValidator } from "../shared/interfaces/validator";
+import mongoose, { HydratedDocument, QueryWithHelpers } from "mongoose";
+import { SchemaField } from "../shared/interfaces/validator";
+import { NextRequest } from "next/server";
+import { Model } from "mongoose";
 
 export interface IStoreValidator {
-  storeName: IValidator;
-  description?: IValidator;
+  storeName: SchemaField;
+  description?: SchemaField;
 }
 
 export interface IStore {
@@ -12,3 +14,16 @@ export interface IStore {
   description: string;
   owner: mongoose.Schema.Types.ObjectId;
 }
+
+export interface StoreQueryHelpers {
+  paginate(
+    page: number,
+    limit: number
+  ): QueryWithHelpers<
+    HydratedDocument<IStore>[],
+    HydratedDocument<IStore>,
+    StoreQueryHelpers
+  >;
+}
+
+export type StoreModelType = Model<IStore, StoreQueryHelpers>;

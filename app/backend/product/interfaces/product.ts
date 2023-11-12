@@ -16,14 +16,13 @@ export interface IProduct {
   storeId: Schema.Types.ObjectId;
   slug: string;
   owner: Schema.Types.ObjectId;
+  variants: Array<Schema.Types.ObjectId>;
 }
 
 export interface IProductValidator {
   name: IValidator;
   description: IValidator;
   price: IValidator;
-  images: IValidator;
   storeId: IValidator;
-  url: IValidator;
-  stocks: IValidator;
+  variants: IValidator;
 }

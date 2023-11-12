@@ -1,17 +1,22 @@
 import { HydratedDocument, Model, QueryWithHelpers, Schema } from "mongoose";
-import { IValidator } from "../shared/interfaces/validator";
+import { SchemaField } from "../shared/interfaces/validator";
 import { NextRequest } from "next/server";
 
 export interface ICategory {
   name: string;
   createdBy: Schema.Types.ObjectId;
-  storeId: Schema.Types.ObjectId;
+  store: Schema.Types.ObjectId;
   deleted: boolean;
 }
 
+export interface ICategoryPayload {
+  name: string;
+  storeId: Schema.Types.ObjectId;
+}
+
 export interface ICategoryValidator {
-  name: IValidator;
-  storeId: IValidator;
+  name: SchemaField;
+  storeId: SchemaField;
 }
 
 export interface CategoryQueryHelpers {

@@ -1,7 +1,7 @@
-import { IValidator } from "../shared/interfaces/validator";
+import { SchemaField } from "../shared/interfaces/validator";
 
 export interface IAuthValidator {
-    email: IValidator;
-    password: IValidator;
-    remember: IValidator;
-  }
+  email: SchemaField;
+  password: SchemaField;
+  remember: SchemaField;
+}

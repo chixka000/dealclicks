@@ -1,19 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendErrorResponse } from "../../shared/exception/errorResponse";
-import { validate } from "../../shared/validator/validate";
 import { storeValidator } from "../validator/storeValidator";
 import StoreService from "../services/storeService";
 import Store from "../models/store";
 import { slugify } from "@/app/helper/formatter";
 import { authorize } from "../../shared/utils/getDataFromToken";
+import { validate } from "../../shared/validator";
+// import { INextRequest } from "../../shared/interfaces/request";
 
 export async function create(request: NextRequest) {
   try {
     // validate request body
+    // request.validate = validate;
+    // console.log(await request.);
+
     const { errors, data } = await validate(request, storeValidator);
 
     // check if there is errors in the validate response
-    if (errors) return sendErrorResponse(422, errors);
+    if (errors.length) return sendErrorResponse(422, errors);
 
     // initialize StoreService
     const storeService = new StoreService();
@@ -48,7 +52,7 @@ export async function update(
     );
 
     // check if there is errors in the validate response
-    if (errors) return sendErrorResponse(422, errors);
+    if (errors.length) return sendErrorResponse(422, errors);
 
     // get store with _id equal to params.id and owner equal to the user._id (logged in user)
     const store = await Store.findOne({ _id: params.id, owner: user!._id });
@@ -96,19 +100,16 @@ export async function index(request: NextRequest) {
         error: "You have no permission to execute this request.",
       });
 
-    // get queryStrings to paginate
-    const page = parseInt(request.nextUrl.searchParams.get("page") || "1");
-    const limit = parseInt(request.nextUrl.searchParams.get("limit") || "10");
-
-    // pagination operation
-    const skip = (page - 1) * limit;
-
     let query = {};
 
     // filter query if the user is client, to only show the stores of the logged in user
     if (!isAdmin) query = { owner: user._id };
 
-    const stores = await Store.find(query).skip(skip).limit(limit);
+    // get queryStrings to paginate
+    const page = parseInt(request.nextUrl.searchParams.get("page") || "1");
+    const limit = parseInt(request.nextUrl.searchParams.get("limit") || "10");
+
+    const stores = await Store.find(query).paginate(page, limit);
 
     // get total count and totalpages of the stores for pagination information
     const total = await Store.countDocuments(query);
