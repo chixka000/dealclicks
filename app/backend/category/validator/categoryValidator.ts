@@ -1,8 +1,6 @@
 import { NextRequest } from "next/server";
-import { ICategory, ICategoryPayload, ICategoryValidator } from "../interfaces";
+import { ICategoryPayload, ICategoryValidator } from "../interfaces";
 import { IUser } from "../../user/interfaces";
-import Category from "../models/category";
-import Store from "../../store/models/store";
 import { authorize } from "../../shared/utils/getDataFromToken";
 import { Schema } from "../../shared/validator";
 
@@ -48,6 +46,16 @@ export async function categoryValidator(
             method: "exists",
             model: "Store",
             where: { _id: data.storeId, owner: user._id },
+          },
+        ],
+      }),
+      parent: Schema.StringOptional({
+        trim: true,
+        rules: [
+          {
+            method: "exists",
+            model: "Category",
+            where: { _id: data?.parent, owner: user._id },
           },
         ],
       }),

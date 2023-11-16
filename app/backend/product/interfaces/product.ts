@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import { IValidator } from "../../shared/interfaces/validator";
+import { HydratedDocument, Model, QueryWithHelpers, Schema } from "mongoose";
+import { IValidator, SchemaField } from "../../shared/interfaces/validator";
 
 export interface IProduct {
   name: string;
@@ -13,16 +13,28 @@ export interface IProduct {
       imageId: Schema.Types.ObjectId;
     }
   ];
-  storeId: Schema.Types.ObjectId;
+  store: Schema.Types.ObjectId;
   slug: string;
   owner: Schema.Types.ObjectId;
   variants: Array<Schema.Types.ObjectId>;
 }
 
 export interface IProductValidator {
-  name: IValidator;
-  description: IValidator;
-  price: IValidator;
-  storeId: IValidator;
-  variants: IValidator;
+  name: SchemaField;
+  description: SchemaField;
+  price: SchemaField;
+  storeId: SchemaField;
+  variants: SchemaField;
 }
+
+export interface ProductQueryHelpers {
+  populateRelations(
+    request: NextRequest
+  ): QueryWithHelpers<
+    HydratedDocument<IProduct>[],
+    HydratedDocument<IProduct>,
+    ProductQueryHelpers
+  >;
+}
+
+export type ProductModelType = Model<IProduct, ProductQueryHelpers>;

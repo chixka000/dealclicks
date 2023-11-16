@@ -3,8 +3,9 @@ import { sendErrorResponse } from "../../shared/exception/errorResponse";
 import { authorize } from "../../shared/utils/getDataFromToken";
 import { categoryValidator } from "../validator/categoryValidator";
 import Category from "../models/category";
-import { ObjectId, models } from "mongoose";
+import { ObjectId } from "mongoose";
 import { validate } from "../../shared/validator";
+import { ICategory } from "../interfaces";
 
 export async function store(request: NextRequest) {
   try {
@@ -14,12 +15,31 @@ export async function store(request: NextRequest) {
     // check if there is errors in the validate response
     if (errors.length) return sendErrorResponse(422, errors);
 
-    // create document in the collection
-    const category = await Category.create({
+    //construct payload
+    const categoryPayload: ICategory = {
       name: data.name,
       store: data.storeId,
-      createdBy: user!._id,
-    });
+      createdBy: user!._id!,
+    };
+
+    if (data.parent) categoryPayload.parent = data.parent;
+
+    // create document in the collection
+    const category = await Category.create(categoryPayload);
+
+    // update subCategories of parent
+    if (data.parent) {
+      const parentCategory = await Category.findOne({ _id: data.parent });
+
+      if (!parentCategory)
+        return sendErrorResponse(404, { errors: "Parent category not found" });
+
+      if (parentCategory?.subCategories)
+        parentCategory.subCategories.push(data.parent);
+      else parentCategory.subCategories = [data.parent];
+
+      await parentCategory?.save();
+    }
 
     // return success response
     return NextResponse.json(

@@ -89,7 +89,7 @@ export async function uniqueRule(
 }
 
 export async function existsRule(
-  _: any,
+  value: any,
   property: string,
   model?: string,
   where?: object,
@@ -113,6 +113,8 @@ export async function existsRule(
       };
 
     let query = {};
+
+    if (!where && !whereNot) query = { _id: value };
 
     if (where) query = { ...query, ...where };
 

@@ -51,7 +51,7 @@ export const Menu = () => {
               <div className="flex flex-col justify-between h-full bg-white text-white rounded-full">
                 <button
                   onClick={handleShow}
-                  className="  text-dark-theme p-2 rounded-full text-dark-theme"
+                  className="  text-dark-theme p-2 rounded-full"
                 >
                   <LuSearch size={20} />
                 </button>
