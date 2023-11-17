@@ -153,7 +153,7 @@ async function schemaFieldValidations(
 
   // execute rules
   if (!hasError && fieldSchema.rules) {
-    if (fieldSchema.rules.length) {
+    if (value && fieldSchema.rules.length) {
       const rulePromises: Promise<void>[] = [];
 
       fieldSchema.rules.forEach((rule: IRulePayload) => {

@@ -43,6 +43,8 @@ userSchema.pre("save", async function (this: IUser & Document, next) {
   }
 });
 
-const User = () => model("User", userSchema);
+const UserHandler = () => model("User", userSchema);
 
-export default (models.User || User()) as ReturnType<typeof User>;
+const User = (models.User || UserHandler()) as ReturnType<typeof UserHandler>;
+
+export default User;

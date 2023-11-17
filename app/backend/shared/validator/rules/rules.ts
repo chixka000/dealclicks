@@ -1,4 +1,4 @@
-import { Document, Model, models } from "mongoose";
+import mongoose, { Document, Model, models } from "mongoose";
 import { IRuleResponse } from "../../interfaces/validator";
 
 export function emailRule(value: string): IRuleResponse {
@@ -42,7 +42,7 @@ export function passwordRule(value: string): IRuleResponse {
 export async function uniqueRule(
   value: any,
   property: string,
-  model?: string,
+  model?: Model<Document & any>,
   where?: object,
   whereNot?: object
 ): Promise<IRuleResponse> {
@@ -54,14 +54,14 @@ export async function uniqueRule(
         message: `Model not found.`,
       };
 
-    const modelInstance = models[model];
+    // const modelInstance = models[model];
 
-    if (!modelInstance)
-      return {
-        error: true,
-        type: "UNIQUE",
-        message: `Model not found.`,
-      };
+    // if (!modelInstance)
+    //   return {
+    //     error: true,
+    //     type: "UNIQUE",
+    //     message: `Model not found.`,
+    //   };
 
     let query = { [property]: value };
 
@@ -69,7 +69,7 @@ export async function uniqueRule(
 
     if (whereNot) query = { ...query, ...whereNot };
 
-    const baseQuery = await modelInstance.findOne(query);
+    const baseQuery = await model.findOne(query);
 
     if (baseQuery)
       return {
@@ -91,7 +91,7 @@ export async function uniqueRule(
 export async function existsRule(
   value: any,
   property: string,
-  model?: string,
+  model?: Model<Document>,
   where?: object,
   whereNot?: object
 ): Promise<IRuleResponse> {
@@ -99,18 +99,18 @@ export async function existsRule(
     if (!model)
       return {
         error: true,
-        type: "UNIQUE",
-        message: `Model not found.`,
-      };
-
-    const modelInstance = models[model];
-
-    if (!modelInstance)
-      return {
-        error: true,
         type: "EXISTS",
-        message: `Model not found.`,
+        message: `${model} Model not found.`,
       };
+
+    // const modelInstance = models[model];
+
+    // if (!modelInstance)
+    //   return {
+    //     error: true,
+    //     type: "EXISTS",
+    //     message: `${model} Model not found.`,
+    // };
 
     let query = {};
 
@@ -120,13 +120,13 @@ export async function existsRule(
 
     if (whereNot) query = { ...query, ...whereNot };
 
-    const baseQuery = await modelInstance.findOne({ ...query });
+    const baseQuery = await model.findOne({ ...query });
 
     if (!baseQuery)
       return {
         error: true,
         type: "EXISTS",
-        message: `${property} not found`,
+        message: `${property} not founds`,
       };
 
     return { error: false };

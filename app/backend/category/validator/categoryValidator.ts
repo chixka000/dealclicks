@@ -3,6 +3,8 @@ import { ICategoryPayload, ICategoryValidator } from "../interfaces";
 import { IUser } from "../../user/interfaces";
 import { authorize } from "../../shared/utils/getDataFromToken";
 import { Schema } from "../../shared/validator";
+import Category from "../models/category";
+import Store from "../../store/models/store";
 
 export async function categoryValidator(
   request: NextRequest,
@@ -27,7 +29,7 @@ export async function categoryValidator(
         rules: [
           {
             method: "unique",
-            model: "Category",
+            model: Category,
             where: { name: data.name, store: data.storeId },
             whereNot:
               method === "PATCH" || method === "PUT"
@@ -44,7 +46,7 @@ export async function categoryValidator(
         rules: [
           {
             method: "exists",
-            model: "Store",
+            model: Store,
             where: { _id: data.storeId, owner: user._id },
           },
         ],
@@ -54,7 +56,7 @@ export async function categoryValidator(
         rules: [
           {
             method: "exists",
-            model: "Category",
+            model: Category,
             where: { _id: data?.parent, owner: user._id },
           },
         ],

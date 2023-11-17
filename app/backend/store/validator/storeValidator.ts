@@ -3,6 +3,7 @@ import { authorize } from "../../shared/utils/getDataFromToken";
 import { IStore, IStoreValidator } from "../interfaces";
 import { IUser } from "../../user/interfaces";
 import { Schema } from "../../shared/validator";
+import Store from "../models/store";
 
 export async function storeValidator(
   request: NextRequest,
@@ -23,7 +24,7 @@ export async function storeValidator(
         rules: [
           {
             method: "unique",
-            model: "Store",
+            model: Store,
             where: { storeName: data.storeName },
             whereNot:
               method === "PATCH" || method === "PUT"

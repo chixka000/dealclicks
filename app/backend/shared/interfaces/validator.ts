@@ -31,7 +31,7 @@ export type DataType =
 
 export interface IRulePayload {
   method: RuleMethod;
-  model?: string;
+  model?: Model<Document & any>;
   where?: object;
   whereNot?: object;
   size?: number;
@@ -39,7 +39,7 @@ export interface IRulePayload {
 
 export interface IRuleQueryParameters {
   value: any;
-  model?: string;
+  model?: Model<Document & any>;
   property: string;
   where?: object;
   whereNot?: object;

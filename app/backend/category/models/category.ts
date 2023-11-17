@@ -67,7 +67,11 @@ categorySchema.query.populateRelations = function populateRelations(
   return this;
 };
 
-const Category = () =>
+const CategoryModelHandler = () =>
   model<ICategory, CategoryModelType>("Category", categorySchema);
 
-export default (models.Category || Category()) as ReturnType<typeof Category>;
+const Category = (models.Category || CategoryModelHandler()) as ReturnType<
+  typeof CategoryModelHandler
+>;
+
+export default Category;

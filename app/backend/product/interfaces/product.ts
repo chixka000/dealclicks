@@ -22,14 +22,28 @@ export interface IProduct {
 export interface IProductValidator {
   name: SchemaField;
   description: SchemaField;
-  price: SchemaField;
   storeId: SchemaField;
   variants: SchemaField;
+}
+
+export interface IProductPayload {
+  name: string;
+  description?: string;
+  storeId: string;
+  variants: Array<Schema.Types.ObjectId>;
 }
 
 export interface ProductQueryHelpers {
   populateRelations(
     request: NextRequest
+  ): QueryWithHelpers<
+    HydratedDocument<IProduct>[],
+    HydratedDocument<IProduct>,
+    ProductQueryHelpers
+  >;
+  paginate(
+    page: number,
+    limit: number
   ): QueryWithHelpers<
     HydratedDocument<IProduct>[],
     HydratedDocument<IProduct>,

@@ -7,7 +7,6 @@ import {
   models,
 } from "mongoose";
 import { IStore, StoreModelType, StoreQueryHelpers } from "../interfaces";
-import { NextRequest } from "next/server";
 
 const storeSchema = new Schema<
   IStore,
@@ -37,6 +36,10 @@ storeSchema.query.paginate = function paginate(
   return this;
 };
 
-const Store = () => model<IStore, StoreModelType>("Store", storeSchema);
+const StoreHandler = () => model<IStore, StoreModelType>("Store", storeSchema);
 
-export default (models.Store || Store()) as ReturnType<typeof Store>;
+const Store = (models.Store || StoreHandler()) as ReturnType<
+  typeof StoreHandler
+>;
+
+export default Store;

@@ -1,12 +1,15 @@
 import { NextRequest } from "next/server";
-import { IProduct, IProductValidator } from "../interfaces/product";
+import { IProduct, IProductPayload, IProductValidator } from "../interfaces/product";
 import { IUser } from "../../user/interfaces";
 import { authorize } from "../../shared/utils/getDataFromToken";
 import { Schema } from "../../shared/validator";
+import Store from "../../store/models/store";
+import Product from "../models/product";
+import File from "../../file/models/file";
 
 export async function productValidator(
   request: NextRequest,
-  data: IProduct,
+  data: IProductPayload,
   params?: { id: string }
 ): Promise<{ schema: IProductValidator; message: any; user: IUser }> {
   try {
@@ -23,8 +26,8 @@ export async function productValidator(
         rules: [
           {
             method: "unique",
-            model: "Product",
-            where: { storeId: data.store },
+            model: Product,
+            where: { store: data.storeId },
             whereNot:
               method === "PATCH" || method === "PUT"
                 ? { _id: { $ne: params!.id } }
@@ -39,26 +42,26 @@ export async function productValidator(
         trim: true,
         rules: [{ method: "minLength", size: 10 }],
       }),
-      price: Schema.NumberOptional(),
       storeId: Schema.String({
         trim: true,
         rules: [
           {
             method: "exists",
-            model: "Store",
-            where: { _id: data.store, owner: user._id },
+            model: Store,
+            where: { _id: data.storeId, owner: user._id },
           },
         ],
       }),
       variants: Schema.Array({
         members: {
           name: Schema.String({ trim: true }),
+          price: Schema.NumberOptional(),
           url: Schema.String(),
           sizes: Schema.ArrayOptional({ member: Schema.String() }),
           media: Schema.ArrayOptional({
             member: Schema.String({
               trim: true,
-              rules: [{ method: "exists", model: "File" }],
+              rules: [{ method: "exists", model: File }],
             }),
           }),
           stock: Schema.NumberOptional(),

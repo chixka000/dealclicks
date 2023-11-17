@@ -54,6 +54,8 @@ fileSchema.query.populateRelations = function populateRelations(
   return this;
 };
 
-const File = () => model<IFile, FileModelType>("File", fileSchema);
+const FileHandler = () => model<IFile, FileModelType>("File", fileSchema);
 
-export default (models.File || File()) as ReturnType<typeof File>;
+const File = (models.File || FileHandler()) as ReturnType<typeof FileHandler>;
+
+export default File;
