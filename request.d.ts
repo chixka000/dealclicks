@@ -1,14 +1,10 @@
 import { NextRequest as OriginalNextRequest } from "next/server";
-import { IValidatorResponse } from "./app/backend/shared/interfaces/validator";
-
-export interface CustomContext {
-  validate(validator: Function): Promise<IValidatorResponse>;
-  name: string;
-  // Add other properties if needed
-}
+import { IValidatorResponse, SchemaField } from "./app/backend/shared/interfaces/validator";
+import { IUser } from "./app/backend/user/interfaces";
 
 declare global {
   declare interface NextRequest extends OriginalNextRequest {
-    context: CustomContext;
+    validate(): Promise<{ schema: { [key: string]: SchemaField }; message: any }> 
+    user: IUser;
   }
 }

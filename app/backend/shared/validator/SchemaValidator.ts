@@ -6,8 +6,8 @@ import { IUser } from "../../user/interfaces";
 export default class SchemaValidator {
   async validate(
     request: NextRequest,
-    // this: NextRequest,
-    validator: any,
+    // // this: NextRequest,
+    validator: Function,
     params?: { id: string }
   ) {
     const data = await request.json();
@@ -15,7 +15,6 @@ export default class SchemaValidator {
     const properties: {
       schema: { [key: string]: SchemaField };
       message: { [key: string]: { [key: string]: string } };
-      user: IUser;
     } = await validator(request, data, params);
 
     const errors = await validatorHandler(
@@ -24,6 +23,8 @@ export default class SchemaValidator {
       properties.message
     );
 
-    return { errors, data, user: properties.user };
+    if (errors.length) throw { code: 422, errors };
+
+    return data;
   }
 }

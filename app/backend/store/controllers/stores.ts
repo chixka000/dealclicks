@@ -1,23 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { sendErrorResponse } from "../../shared/exception/errorResponse";
 import { storeValidator } from "../validator/storeValidator";
 import StoreService from "../services/storeService";
 import Store from "../models/store";
 import { slugify } from "@/app/helper/formatter";
-import { authorize } from "../../shared/utils/getDataFromToken";
 import { validate } from "../../shared/validator";
 // import { INextRequest } from "../../shared/interfaces/request";
 
 export async function create(request: NextRequest) {
   try {
     // validate request body
-    // request.validate = validate;
-    // console.log(await request.);
-
-    const { errors, data } = await validate(request, storeValidator);
-
-    // check if there is errors in the validate response
-    if (errors.length) return sendErrorResponse(422, errors);
+    const data = await validate(request, storeValidator);
 
     // initialize StoreService
     const storeService = new StoreService();
@@ -32,10 +25,7 @@ export async function create(request: NextRequest) {
     );
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
 
@@ -45,23 +35,17 @@ export async function update(
 ) {
   try {
     // validate request body
-    const { errors, data, user } = await validate(
-      request,
-      storeValidator,
-      params
-    );
-
-    // check if there is errors in the validate response
-    if (errors.length) return sendErrorResponse(422, errors);
+    const data = await validate(request, storeValidator, params);
 
     // get store with _id equal to params.id and owner equal to the user._id (logged in user)
-    const store = await Store.findOne({ _id: params.id, owner: user!._id });
+    const store = await Store.findOne({
+      _id: params.id,
+      owner: request.user._id,
+    });
 
     // return 404 error response if there is no store found the query above
     if (!store)
-      return sendErrorResponse(404, {
-        error: "Store not found.",
-      });
+      return sendErrorResponse({ code: 404, message: "Store not found." });
 
     // assign the new value for the Store model properties
     store.storeName = data.storeName;
@@ -78,10 +62,7 @@ export async function update(
     );
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
 
@@ -91,19 +72,10 @@ export async function index(request: NextRequest) {
     const isAdmin =
       request.nextUrl.pathname === "/api/admin/stores" ? true : false;
 
-    // validate if there is a user logged in
-    const user = await authorize(request, isAdmin);
-
-    // if there is no user returned. return a 401 error response
-    if (!user)
-      return sendErrorResponse(401, {
-        error: "You have no permission to execute this request.",
-      });
-
     let query = {};
 
     // filter query if the user is client, to only show the stores of the logged in user
-    if (!isAdmin) query = { owner: user._id };
+    if (!isAdmin) query = { owner: request.user._id };
 
     // get queryStrings to paginate
     const page = parseInt(request.nextUrl.searchParams.get("page") || "1");
@@ -125,10 +97,7 @@ export async function index(request: NextRequest) {
     );
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
 
@@ -140,32 +109,18 @@ export async function show(
     // get the route paramater id
     const { id } = params;
 
-    // validate if there is a user logged in
-    const user = await authorize(request);
-
-    // if there is no user returned. return a 401 error response
-    if (!user)
-      return sendErrorResponse(401, {
-        error: "You have no permission to execute this request.",
-      });
-
     // get the store with _id equal to the route parameter id and the owner is equal to user._id(id of the logged in user)
-    const store = await Store.findOne({ _id: id, owner: user._id });
+    const store = await Store.findOne({ _id: id, owner: request.user._id });
 
     // return 404 error response if there is no document found in the collection
     if (!store)
-      return sendErrorResponse(404, {
-        error: "Store not found",
-      });
+      return sendErrorResponse({ code: 404, message: "Store not found" });
 
     // return success response
     return NextResponse.json(store, { status: 200 });
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
 
@@ -190,9 +145,6 @@ export async function destroy(
     );
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }

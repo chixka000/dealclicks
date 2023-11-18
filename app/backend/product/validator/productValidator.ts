@@ -1,7 +1,4 @@
-import { NextRequest } from "next/server";
-import { IProduct, IProductPayload, IProductValidator } from "../interfaces/product";
-import { IUser } from "../../user/interfaces";
-import { authorize } from "../../shared/utils/getDataFromToken";
+import { IProductPayload, IProductValidator } from "../interfaces/product";
 import { Schema } from "../../shared/validator";
 import Store from "../../store/models/store";
 import Product from "../models/product";
@@ -11,13 +8,8 @@ export async function productValidator(
   request: NextRequest,
   data: IProductPayload,
   params?: { id: string }
-): Promise<{ schema: IProductValidator; message: any; user: IUser }> {
+): Promise<{ schema: IProductValidator; message: any }> {
   try {
-    const user = await authorize(request);
-
-    if (!user)
-      throw new Error(`You don't have permission to execute this request.`);
-
     const method = request.method;
 
     const schema: IProductValidator = {
@@ -48,7 +40,7 @@ export async function productValidator(
           {
             method: "exists",
             model: Store,
-            where: { _id: data.storeId, owner: user._id },
+            where: { _id: data.storeId, owner: request.user._id },
           },
         ],
       }),
@@ -71,7 +63,7 @@ export async function productValidator(
 
     const message = {};
 
-    return { schema, message, user };
+    return { schema, message };
   } catch (error) {
     throw new Error(`You don't have permission to execute this request.`);
   }

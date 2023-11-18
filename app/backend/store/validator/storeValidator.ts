@@ -1,4 +1,3 @@
-import { NextRequest } from "next/server";
 import { authorize } from "../../shared/utils/getDataFromToken";
 import { IStore, IStoreValidator } from "../interfaces";
 import { IUser } from "../../user/interfaces";
@@ -9,13 +8,8 @@ export async function storeValidator(
   request: NextRequest,
   data: IStore,
   params?: { id: string }
-): Promise<{ schema: IStoreValidator; message: any; user: IUser }> {
+): Promise<{ schema: IStoreValidator; message: any }> {
   try {
-    const user = await authorize(request);
-
-    if (!user)
-      throw new Error(`You don't have permission to execute this request.`);
-
     const method = request.method;
 
     const schema: IStoreValidator = {
@@ -45,10 +39,8 @@ export async function storeValidator(
       },
     };
 
-    return { schema, message, user };
+    return { schema, message };
   } catch (error) {
-    // console.log(error);
-
     throw new Error(`You don't have permission to execute this request.`);
   }
 }

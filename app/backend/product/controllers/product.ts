@@ -4,15 +4,11 @@ import { validate } from "../../shared/validator";
 import { productValidator } from "../validator/productValidator";
 import Product from "../models/product";
 import { VARIANTSERVICE } from "../services";
-import { authorize } from "../../shared/utils/getDataFromToken";
 
 export async function create(request: NextRequest) {
   try {
     // validate request body
-    const { errors, data, user } = await validate(request, productValidator);
-
-    // check if there is errors in the validate response
-    if (errors.length) return sendErrorResponse(422, errors);
+    const data = await validate(request, productValidator);
 
     // construct payload
     const productPayload = {
@@ -20,7 +16,7 @@ export async function create(request: NextRequest) {
       price: data.price,
       description: data.description,
       store: data.storeId,
-      owner: user._id,
+      owner: request.user._id,
     };
 
     // create the product
@@ -36,10 +32,7 @@ export async function create(request: NextRequest) {
     );
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
 
@@ -48,15 +41,6 @@ export async function index(
   { params }: { params: { storeId: string } }
 ) {
   try {
-    // validate if there is a user logged in
-    const user = await authorize(request);
-
-    // if there is no user returned. return a 401 error response
-    if (!user)
-      return sendErrorResponse(401, {
-        error: "You have no permission to execute this request.",
-      });
-
     // get queryStrings to paginate
     const page = parseInt(request.nextUrl.searchParams.get("page") || "1");
     const limit = parseInt(request.nextUrl.searchParams.get("limit") || "10");
@@ -64,7 +48,7 @@ export async function index(
     // execute query
     const products = await Product.find({
       store: params.storeId,
-      owner: user._id,
+      owner: request.user._id,
     })
       .populateRelations(request)
       .paginate(page, limit);
@@ -72,7 +56,7 @@ export async function index(
     // get total count and totalpages of the stores for pagination information
     const total = await Product.countDocuments({
       store: params.storeId,
-      owner: user._id,
+      owner: request.user._id,
     });
     const totalPages = Math.ceil(total / limit);
 
@@ -86,9 +70,15 @@ export async function index(
     );
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+
+    return sendErrorResponse(error);
+  }
+}
+
+export async function show(request: NextRequest) {
+  try {
+  } catch (error: any) {
+    // return error response
+    return sendErrorResponse(error);
   }
 }

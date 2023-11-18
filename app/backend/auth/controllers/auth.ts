@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { authValidator } from "../validator/authValidator";
 import { sendErrorResponse } from "../../shared/exception/errorResponse";
 import User from "../../user/models/user";
@@ -10,22 +10,21 @@ import { validate } from "../../shared/validator";
 export async function login(request: NextRequest) {
   try {
     // validate body
-    const { errors, data } = await validate(request, authValidator);
-
-    // return 422 error response if there is error in validation
-    if (errors.length) return sendErrorResponse(422, errors);
+    const data = await validate(request, authValidator);
 
     // find user in collection with email equal to data.email(email sent by the client)
     const user = await User.findOne({ email: data.email }).select("+password");
 
     // return 401 error response if there is no user found in the collection
-    if (!user) return sendErrorResponse(401, "Invalid Credentials.");
+    if (!user)
+      return sendErrorResponse({ code: 401, message: "Invalid Credentials." });
 
     // compare the user inputed password to the password in the collection
     const isSame = await bcrypt.compare(data.password, user.password);
 
     // return 401 error response if the two password did not match
-    if (!isSame) return sendErrorResponse(401, "Invalid Credentials.");
+    if (!isSame)
+      return sendErrorResponse({ code: 401, message: "Invalid Credentials." });
 
     // construct JWT object to store in the JWT token
     const jwtObject = {
@@ -58,26 +57,14 @@ export async function login(request: NextRequest) {
     return response;
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
 
 export async function me(request: NextRequest) {
   try {
-    // validate if the user is logged in
-    const me = await authorize(request);
-
-    // if there is no user returned. return a 401 error response
-    if (!me)
-      return sendErrorResponse(401, {
-        error: "You have no permission to execute this request.",
-      });
-
     // get the users information
-    const user = await User.findOne({ email: me.email })
+    const user = await User.findOne({ email: request.user.email })
       .populate("stores")
       .select("-password");
 
@@ -85,6 +72,6 @@ export async function me(request: NextRequest) {
     return NextResponse.json({ user }, { status: 200 });
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(401, "You are not logged in.");
+    return sendErrorResponse({ code: 401, message: "Invalid Credentials." });
   }
 }

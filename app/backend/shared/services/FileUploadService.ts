@@ -98,8 +98,6 @@ export default class FileUploadService {
 
       // store to file collection
 
-      console.log(uploadedData);
-
       const types = clientFile.type.split("/");
 
       const file = await File.create({
@@ -166,7 +164,6 @@ export default class FileUploadService {
       });
 
       const files = await File.insertMany(formattedFile);
-      // console.log(uploadedData);
 
       for (const imagePath of imagePaths) {
         await unlink(imagePath);

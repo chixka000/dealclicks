@@ -1,12 +1,13 @@
-import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 import User from "../../user/models/user";
 
-export async function authorize(
-  request: NextRequest,
-  isAdmin: boolean = false
-) {
+export async function authorize(request: NextRequest) {
   try {
+    // initial isAdmin to check the request is from admin endpoint or client endpoint
+    const isAdmin = request.nextUrl.pathname.includes("/api/admin")
+      ? true
+      : false;
+
     // get token from cookie
     const token = request.cookies.get("token")?.value;
 

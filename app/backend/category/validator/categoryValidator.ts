@@ -1,7 +1,4 @@
-import { NextRequest } from "next/server";
 import { ICategoryPayload, ICategoryValidator } from "../interfaces";
-import { IUser } from "../../user/interfaces";
-import { authorize } from "../../shared/utils/getDataFromToken";
 import { Schema } from "../../shared/validator";
 import Category from "../models/category";
 import Store from "../../store/models/store";
@@ -10,19 +7,12 @@ export async function categoryValidator(
   request: NextRequest,
   data: ICategoryPayload,
   params?: { id: string }
-): Promise<{ schema: ICategoryValidator; message: any; user: IUser }> {
+): Promise<{ schema: ICategoryValidator; message: any }> {
   try {
-    // check if there is user logged in
-    const user = await authorize(request);
-
-    // validate if user exists
-    if (!user)
-      throw new Error(`You don't have permission to execute this request.`);
     // get request method
     const method = request.method;
 
     // define schema for the data
-
     const schema: ICategoryValidator = {
       name: Schema.String({
         trim: true,
@@ -47,7 +37,7 @@ export async function categoryValidator(
           {
             method: "exists",
             model: Store,
-            where: { _id: data.storeId, owner: user._id },
+            where: { _id: data.storeId, owner: request.user._id },
           },
         ],
       }),
@@ -57,7 +47,7 @@ export async function categoryValidator(
           {
             method: "exists",
             model: Category,
-            where: { _id: data?.parent, owner: user._id },
+            where: { _id: data?.parent, owner: request.user._id },
           },
         ],
       }),
@@ -67,7 +57,7 @@ export async function categoryValidator(
     const message = {};
 
     // return schame, message and user
-    return { schema, message, user };
+    return { schema, message };
   } catch (error) {
     // throw error
     throw new Error(`You don't have permission to execute this request.`);

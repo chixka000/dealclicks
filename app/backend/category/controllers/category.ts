@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { sendErrorResponse } from "../../shared/exception/errorResponse";
-import { authorize } from "../../shared/utils/getDataFromToken";
 import { categoryValidator } from "../validator/categoryValidator";
 import Category from "../models/category";
 import { ObjectId } from "mongoose";
@@ -10,16 +9,13 @@ import { ICategory } from "../interfaces";
 export async function store(request: NextRequest) {
   try {
     // validate request body
-    const { errors, data, user } = await validate(request, categoryValidator);
-
-    // check if there is errors in the validate response
-    if (errors.length) return sendErrorResponse(422, errors);
+    const data = await validate(request, categoryValidator);
 
     //construct payload
     const categoryPayload: ICategory = {
       name: data.name,
       store: data.storeId,
-      createdBy: user!._id!,
+      createdBy: request.user!._id!,
     };
 
     if (data.parent) categoryPayload.parent = data.parent;
@@ -32,7 +28,10 @@ export async function store(request: NextRequest) {
       const parentCategory = await Category.findOne({ _id: data.parent });
 
       if (!parentCategory)
-        return sendErrorResponse(404, { errors: "Parent category not found" });
+        return sendErrorResponse({
+          code: 404,
+          message: "Parent category not found",
+        });
 
       if (parentCategory?.subCategories)
         parentCategory.subCategories.push(data.parent);
@@ -48,10 +47,7 @@ export async function store(request: NextRequest) {
     );
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
 
@@ -60,19 +56,10 @@ export async function index(
   { params }: { params: { storeId: string } }
 ) {
   try {
-    // validate if there is a user logged in
-    const user = await authorize(request);
-
-    // if there is no user returned. return a 401 error response
-    if (!user)
-      return sendErrorResponse(401, {
-        error: "You have no permission to execute this request.",
-      });
-
     // execute query
     const categories = await Category.find({
       store: params.storeId,
-      createdBy: user._id,
+      createdBy: request.user._id,
       deleted: false,
     })
       .select("-deleted")
@@ -82,10 +69,7 @@ export async function index(
     return NextResponse.json({ data: categories }, { status: 200 });
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
 
@@ -94,15 +78,6 @@ export async function show(
   { params }: { params: { storeId: string; categoryId: string } }
 ) {
   try {
-    // validate if there is a user logged in
-    const user = await authorize(request);
-
-    // if there is no user returned. return a 401 error response
-    if (!user)
-      return sendErrorResponse(401, {
-        error: "You have no permission to execute this request.",
-      });
-
     // execute query
     const category = await Category.findOne({
       _id: params.categoryId,
@@ -114,16 +89,13 @@ export async function show(
 
     // return error response if no category was found
     if (!category)
-      return sendErrorResponse(404, { error: "Category not found." });
+      return sendErrorResponse({ code: 404, message: "Category not found." });
 
     // return success response
     return NextResponse.json(category, { status: 200 });
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
 
@@ -133,12 +105,9 @@ export async function update(
 ) {
   try {
     // validate request body
-    const { errors, data, user } = await validate(request, categoryValidator, {
+    const data = await validate(request, categoryValidator, {
       id: params.categoryId,
     });
-
-    // check if there is errors in the validate response
-    if (errors.length) return sendErrorResponse(422, errors);
 
     const { storeId, categoryId } = params;
     // initial isAdmin to check the request is from admin endpoint or client endpoint
@@ -154,16 +123,14 @@ export async function update(
     };
 
     // add query for createdBy if the request is not in admin endpoint
-    if (!isAdmin) query = { ...query, createdBy: user!._id };
+    if (!isAdmin) query = { ...query, createdBy: request.user._id };
 
     // execute query
     const category = await Category.findOne(query).select("-deleted");
 
     // return 404 error response if there is no store found the query above
     if (!category)
-      return sendErrorResponse(404, {
-        error: "Category not found.",
-      });
+      return sendErrorResponse({ code: 404, message: "Category not found." });
 
     // assign the new value for the Category model properties
     category.name = data.name;
@@ -179,10 +146,7 @@ export async function update(
     );
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
 
@@ -191,15 +155,6 @@ export async function destroy(
   { params }: { params: { storeId: string; categoryId: string } }
 ) {
   try {
-    // validate if there is a user logged in
-    const user = await authorize(request);
-
-    // if there is no user returned. return a 401 error response
-    if (!user)
-      return sendErrorResponse(401, {
-        error: "You have no permission to execute this request.",
-      });
-
     // execute query
     const category = await Category.findOne({
       _id: params.categoryId,
@@ -209,7 +164,7 @@ export async function destroy(
 
     // return error response if no category was found
     if (!category)
-      return sendErrorResponse(404, { error: "Category not found." });
+      return sendErrorResponse({ code: 404, message: "Category not found." });
 
     // soft delete category
     category.deleted = true;
@@ -219,9 +174,6 @@ export async function destroy(
     return NextResponse.json({ message: "Category deleted" }, { status: 200 });
   } catch (error: any) {
     // return error response
-    return sendErrorResponse(500, {
-      error:
-        error?.message ?? error?.response?.message ?? "Something went wrong",
-    });
+    return sendErrorResponse(error);
   }
 }
