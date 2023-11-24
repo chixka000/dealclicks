@@ -4,26 +4,38 @@ import { validate } from "../../shared/validator";
 import { productValidator } from "../validator/productValidator";
 import Product from "../models/product";
 import { VARIANTSERVICE } from "../services";
+import mongoose from "mongoose";
 
 export async function create(request: NextRequest) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     // validate request body
     const data = await validate(request, productValidator);
-
     // construct payload
     const productPayload = {
       name: data.name,
       price: data.price,
       description: data.description,
       store: data.storeId,
-      owner: request.user._id,
+      owner: request.user._id
     };
 
-    // create the product
-    const product = await Product.create(productPayload);
+    // create the product instance
+    const product = new Product(productPayload);
 
+    // Save the product within the transaction
+    await product.save({ session });
     // run the variant creation service
-    const result = await VARIANTSERVICE.createMany(product, data.variants);
+    const result = await VARIANTSERVICE.createMany(
+      product,
+      data.variants,
+      session
+    );
+
+    // Commit the transaction if both product and variants are created successfully
+    await session.commitTransaction();
 
     // return success response
     return NextResponse.json(
@@ -48,7 +60,7 @@ export async function index(
     // execute query
     const products = await Product.find({
       store: params.storeId,
-      owner: request.user._id,
+      owner: request.user._id
     })
       .populateRelations(request)
       .paginate(page, limit);
@@ -56,7 +68,7 @@ export async function index(
     // get total count and totalpages of the stores for pagination information
     const total = await Product.countDocuments({
       store: params.storeId,
-      owner: request.user._id,
+      owner: request.user._id
     });
     const totalPages = Math.ceil(total / limit);
 
@@ -64,7 +76,7 @@ export async function index(
     return NextResponse.json(
       {
         data: products,
-        meta: { total, totalPages, page, limit },
+        meta: { total, totalPages, page, limit }
       },
       { status: 200 }
     );

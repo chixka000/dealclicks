@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { IVariant } from "../../interfaces/variant";
 import Variant from "../../models/variant";
 import { IProduct } from "../../interfaces/product";
@@ -6,7 +6,7 @@ import { getVariantIds } from "../../utils";
 import { slugify } from "@/app/helper/formatter";
 
 export default class VariantService {
-  async createMany(product: Document & IProduct, variants: Array<IVariant>) {
+  async createMany(product: Document & IProduct, variants: Array<IVariant>, session: mongoose.ClientSession) {
     try {
       const appendProductId: Array<IVariant> = variants.map(
         (variant: IVariant) => {
@@ -17,13 +17,13 @@ export default class VariantService {
           };
         }
       );
-      const result = await Variant.insertMany(appendProductId);
+      const result = await Variant.insertMany(appendProductId, {session});
 
       const variantIds = getVariantIds(result);
 
       product.variants = variantIds;
 
-      await product.save();
+      await product.save({ session });
 
       return product;
     } catch (error) {
