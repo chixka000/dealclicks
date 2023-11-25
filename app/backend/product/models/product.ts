@@ -31,7 +31,10 @@ const productSchema = new Schema<
     description: {
       type: String,
     },
+    isSpecialOffer: { type: Boolean, default: false },
+    isFeatured: { type: Boolean, default: false },
     store: { type: Schema.Types.ObjectId, ref: "Store" },
+    category: { type: Schema.Types.ObjectId, ref: "Category" },
     owner: { type: Schema.Types.ObjectId, ref: "User" },
     slug: {
       type: String,
@@ -64,6 +67,9 @@ productSchema.query.populateRelations = function populateRelations(
         case "owner":
           this.populate("owner");
           break;
+        case "category":
+          this.populate("category");
+          break;
         case "variants":
           this.populate("variants");
           break;
@@ -81,13 +87,10 @@ productSchema.query.populateRelations = function populateRelations(
 
 productSchema.query.paginate = function paginate(
   this: QueryWithHelpers<any, HydratedDocument<IProduct>, ProductQueryHelpers>,
-  page: number,
+  cursor: string | null,
   limit: number
 ) {
-  // pagination operation
-  const skip = (page - 1) * limit;
-
-  this.skip(skip).limit(limit);
+  if (cursor) this.find({ _id: { $gt: cursor } }).limit(limit);
 
   return this;
 };

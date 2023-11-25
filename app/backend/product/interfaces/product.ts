@@ -7,6 +7,9 @@ export interface IProduct {
   price: number;
   stocks: number;
   url: string;
+  category: Schema.Types.ObjectId;
+  isSpecialOffer: Boolean;
+  isFeatured: Boolean;
   images: [
     {
       tag: "list" | "main";
@@ -23,14 +26,20 @@ export interface IProductValidator {
   name: SchemaField;
   description: SchemaField;
   storeId: SchemaField;
+  categoryId: SchemaField;
+  isFeatured: SchemaField;
+  isSpecialOffer: SchemaField;
   variants: SchemaField;
 }
 
 export interface IProductPayload {
   name: string;
   description?: string;
-  storeId: string;
+  storeId: Schema.Types.ObjectId;
+  categoryId: Schema.Types.ObjectId;
   variants: Array<Schema.Types.ObjectId>;
+  isFeature?: boolean;
+  isSpecialOffer?: boolean;
 }
 
 export interface ProductQueryHelpers {
@@ -42,7 +51,7 @@ export interface ProductQueryHelpers {
     ProductQueryHelpers
   >;
   paginate(
-    page: number,
+    cursor: string | null,
     limit: number
   ): QueryWithHelpers<
     HydratedDocument<IProduct>[],

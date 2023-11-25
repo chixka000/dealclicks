@@ -43,6 +43,6 @@ export function sendErrorResponse(error: any) {
         error?.response?.message ??
         "Something went wrong",
     },
-    { status: error?.code ?? 500 }
+    { status: error?.code && error.code >= 200 ? error.code : 500 }
   );
 }

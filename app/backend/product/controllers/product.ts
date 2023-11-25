@@ -5,6 +5,7 @@ import { productValidator } from "../validator/productValidator";
 import Product from "../models/product";
 import { VARIANTSERVICE } from "../services";
 import mongoose from "mongoose";
+import MetaService from "../../shared/services/MetaService";
 
 export async function create(request: NextRequest) {
   const session = await mongoose.startSession();
@@ -13,13 +14,17 @@ export async function create(request: NextRequest) {
   try {
     // validate request body
     const data = await validate(request, productValidator);
+
     // construct payload
     const productPayload = {
       name: data.name,
       price: data.price,
       description: data.description,
       store: data.storeId,
-      owner: request.user._id
+      category: data.categoryId,
+      owner: request.user._id,
+      isFeatured: data?.isFeatured,
+      isSpecialOffer: data?.isSpecialOffer,
     };
 
     // create the product instance
@@ -27,6 +32,7 @@ export async function create(request: NextRequest) {
 
     // Save the product within the transaction
     await product.save({ session });
+
     // run the variant creation service
     const result = await VARIANTSERVICE.createMany(
       product,
@@ -43,6 +49,43 @@ export async function create(request: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
+    // abort transaction
+    await session.abortTransaction();
+
+    // return error response
+    return sendErrorResponse(error);
+  }
+}
+
+export async function update(
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: { storeId: string; productId: string };
+  }
+) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { storeId, productId } = params;
+    // validate request body
+    const data = await validate(request, productValidator);
+
+    // find the product to be updated
+    const product = await Product.findOne({
+      _id: productId,
+      store: storeId,
+      owner: request.user._id,
+    });
+
+    // return error response if product is not found
+    if (!product)
+      return sendErrorResponse({ code: 404, message: "Product not found" });
+
+    
+  } catch (error: any) {
     // return error response
     return sendErrorResponse(error);
   }
@@ -54,29 +97,35 @@ export async function index(
 ) {
   try {
     // get queryStrings to paginate
-    const page = parseInt(request.nextUrl.searchParams.get("page") || "1");
+    const cursor = request.nextUrl.searchParams.get("cursor") ?? null;
     const limit = parseInt(request.nextUrl.searchParams.get("limit") || "10");
 
+    // filters
+    const filters = {
+      store: params.storeId,
+      owner: request.user._id,
+    };
     // execute query
-    const products = await Product.find({
-      store: params.storeId,
-      owner: request.user._id
-    })
+    const products = await Product.find(filters)
       .populateRelations(request)
-      .paginate(page, limit);
+      .paginate(cursor, limit);
 
-    // get total count and totalpages of the stores for pagination information
-    const total = await Product.countDocuments({
-      store: params.storeId,
-      owner: request.user._id
-    });
-    const totalPages = Math.ceil(total / limit);
+    // get meta
+    const meta = await new MetaService().getMeta(
+      Product,
+      products,
+      filters,
+      limit
+    );
+
+    // const total = await Product.countDocuments(filters);
+    // const totalPages = Math.ceil(total / limit);
 
     // return success response
     return NextResponse.json(
       {
         data: products,
-        meta: { total, totalPages, page, limit }
+        meta,
       },
       { status: 200 }
     );
@@ -87,10 +136,61 @@ export async function index(
   }
 }
 
-export async function show(request: NextRequest) {
+export async function show(
+  request: NextRequest,
+  { params }: { params: { storeId: string; productId: string } }
+) {
   try {
+    const { storeId, productId } = params;
+
+    // execute query
+    const product = await Product.findOne({
+      _id: productId,
+      store: storeId,
+      owner: request.user._id,
+    }).populateRelations(request);
+
+    // return error response if no product found
+    if (!product)
+      return sendErrorResponse({ code: 404, message: "Product not found." });
+
+    // return success reponse
+    return NextResponse.json(product, { status: 200 });
   } catch (error: any) {
     // return error response
+    return sendErrorResponse({ code: 404, message: "Product not found." });
+  }
+}
+
+export async function destroy(
+  request: NextRequest,
+  { params }: { params: { storeId: string; productId: string } }
+) {
+  try {
+    const { storeId, productId } = params;
+
+    // execute query
+    const product = await Product.findOne({
+      _id: productId,
+      store: storeId,
+      owner: request.user._id,
+    });
+
+    // return error response if no product found
+    if (!product)
+      return sendErrorResponse({ code: 404, message: "Product not found." });
+
+    await product.deleteOne({
+      _id: productId,
+      store: storeId,
+      owner: request.user._id,
+    });
+
+    // return success reponse
+    return NextResponse.json({ message: "Product deleted." }, { status: 200 });
+  } catch (error: any) {
+    // return error response
+
     return sendErrorResponse(error);
   }
 }
