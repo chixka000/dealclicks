@@ -6,6 +6,7 @@ import Product from "../models/product";
 import { VARIANTSERVICE } from "../services";
 import mongoose from "mongoose";
 import MetaService from "../../shared/services/MetaService";
+import { METASERVICE } from "../../shared/services";
 
 export async function create(request: NextRequest) {
   const session = await mongoose.startSession();
@@ -84,9 +85,37 @@ export async function update(
     if (!product)
       return sendErrorResponse({ code: 404, message: "Product not found" });
 
-    
+    // assign new value for product fields
+    product.name = data.name;
+    product.store = data.storeId;
+    product.category = data.categoryId;
+    if (data.description) product.description = data.description;
+    if (typeof data.isFeatured === "boolean")
+      product.isFeatured = data.isFeatured;
+    if (typeof data.isSpecialOffer === "boolean")
+      product.isSpecialOffer = data.isSpecialOffer;
+
+    // save the updated product
+    await product.save({ session });
+
+    // update product variants
+    const result = await VARIANTSERVICE.createAndUpdateMany(
+      product,
+      data.variants,
+      session
+    );
+
+    // Commit the transaction if both product and variants are created successfully
+    await session.commitTransaction();
+
+    // return success response
+    return NextResponse.json(
+      { message: "Updated Successfully", product: result },
+      { status: 201 }
+    );
   } catch (error: any) {
     // return error response
+    await session.abortTransaction();
     return sendErrorResponse(error);
   }
 }
@@ -111,7 +140,7 @@ export async function index(
       .paginate(cursor, limit);
 
     // get meta
-    const meta = await new MetaService().getMeta(
+    const meta = await METASERVICE.getMeta(
       Product,
       products,
       filters,

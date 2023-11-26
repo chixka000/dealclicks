@@ -34,6 +34,8 @@ const STATUSCODES = {
 
 // status = response code, body = response body/message (can be set to undefined)
 export function sendErrorResponse(error: any) {
+  console.log(error);
+
   return NextResponse.json(
     {
       ...STATUSCODES?.[error?.code as keyof typeof STATUSCODES],
@@ -43,6 +45,11 @@ export function sendErrorResponse(error: any) {
         error?.response?.message ??
         "Something went wrong",
     },
-    { status: error?.code && error.code >= 200 ? error.code : 500 }
+    {
+      status:
+        error?.code && error.code >= 200 && error.code <= 599
+          ? error.code
+          : 500,
+    }
   );
 }

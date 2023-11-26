@@ -56,6 +56,10 @@ productSchema.query.populateRelations = function populateRelations(
   if (includes) {
     let relations = includes.split(",");
 
+    if (request.nextUrl.pathname.includes("/api/client")) {
+      relations = relations.filter((item) => item.toLowerCase() !== "owner");
+    }
+
     if (relations.includes("variant.media"))
       relations = relations.filter((item) => item !== "variants");
 
@@ -81,6 +85,8 @@ productSchema.query.populateRelations = function populateRelations(
       }
     });
   }
+
+  this.select("-owner -createdAt -updatedAt -__v");
 
   return this;
 };

@@ -41,74 +41,67 @@ export default class VariantService {
     session: mongoose.ClientSession
   ) {
     try {
-      const variantsToCreate: Array<Document & IVariant> = [];
       const variantsToUpdate: Array<Document & IVariant> = [];
-      // segregate variants (create and update)
-      variants.map((item) => {
+      // create insert/update query in bulkWriteOptions
+      let bulkWriteOps: Array<any> = variants.map((item) => {
         if (item._id) {
           variantsToUpdate.push(item);
-          return;
-        }
-
-        variantsToCreate.push(item);
-      });
-
-      const variantsToDelete = product.variants.filter(
-        (id) => !variantsToUpdate.find((itm) => itm._id === id)
-      );
-
-      // construct payload to create variants
-      const appendProductIdCreate: Array<IVariant> = variantsToCreate.map(
-        (variant: IVariant) => {
           return {
-            ...variant,
-            product: product._id,
-            slug: slugify(variant.name),
+            updatedOne: {
+              filter: { _id: item._id },
+              updated: {
+                $set: {
+                  ...item,
+                  product: product._id,
+                  slug: slugify(item.name),
+                },
+              },
+            },
           };
         }
-      );
 
-      // construct payload for update variants
-      const appendProductIdUpdate: Array<IVariant> = variantsToUpdate.map(
-        (variant: IVariant) => {
+        return {
+          insertOne: {
+            document: {
+              ...item,
+              product: product._id,
+              slug: slugify(item.name),
+            },
+          },
+        };
+      });
+
+      // filter and construct query of variants to be deleted
+      const variantsToDelete = product.variants
+        .filter((id) => !variantsToUpdate.find((itm) => itm._id === id))
+        .map((id) => {
           return {
-            ...variant,
-            product: product._id,
-            slug: slugify(variant.name),
+            deleteOne: {
+              filter: { _id: id },
+            },
           };
-        }
+        });
+
+      // combine all queries
+      bulkWriteOps = [...bulkWriteOps, ...variantsToDelete];
+
+      // execute all queries at once using bulkWrite
+      await Variant.bulkWrite(bulkWriteOps as any, { session });
+
+      // fetch all variant ids of product
+      const newVariant = await Variant.find(
+        { product: product._id },
+        { session }
       );
 
-      // construct variants query to use in bulkwrite update
-      const bulkWriteOpsUpdate = variantsToUpdate.map((variant) => ({
-        updatedOne: {
-          filter: { _id: variant._id },
-          updated: { $set: { ...variant } },
-        },
-      }));
+      const newVariantIds = newVariant.map((variant) => variant._id);
+      // update product variant field
+      product.variants = newVariantIds;
 
-      // construct variants query to use in bulkwrite delete
-      const bulkWriteOpsDelete = variantsToDelete.map((variantId) => ({
-        deleteOne: {
-          filter: { _id: variantId },
-        },
-      }));
+      await product.save();
 
-      // create variants
-      const createResult = await Variant.insertMany(appendProductIdCreate, {
-        session,
-      });
-
-      // update variants
-      const updateResult = await Variant.bulkWrite(bulkWriteOpsUpdate as any, {
-        session,
-      });
-
-      // delete variants
-      await Variant.bulkWrite(bulkWriteOpsDelete as any, { session });
-
-      // store new variant ids
-      const newVariantIds = getVariantIds(createResult);
+      // return the updated product
+      return product;
     } catch (error) {
       throw error;
     }

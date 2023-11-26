@@ -1,6 +1,7 @@
 import { HydratedDocument, Model, QueryWithHelpers, Schema } from "mongoose";
 
 export interface IVariant {
+  _id?: Schema.Types.ObjectId;
   url: string;
   price?: Number;
   sizes: Array<string>;
