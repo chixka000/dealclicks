@@ -5,7 +5,6 @@ import { productValidator } from "../validator/productValidator";
 import Product from "../models/product";
 import { VARIANTSERVICE } from "../services";
 import mongoose from "mongoose";
-import MetaService from "../../shared/services/MetaService";
 import { METASERVICE } from "../../shared/services";
 
 export async function create(request: NextRequest) {
@@ -140,12 +139,7 @@ export async function index(
       .paginate(cursor, limit);
 
     // get meta
-    const meta = await METASERVICE.getMeta(
-      Product,
-      products,
-      filters,
-      limit
-    );
+    const meta = await METASERVICE.getMeta(Product, products, filters, limit);
 
     // const total = await Product.countDocuments(filters);
     // const totalPages = Math.ceil(total / limit);

@@ -75,7 +75,7 @@ export async function uniqueRule(
       return {
         error: true,
         type: "UNIQUE",
-        message: `${property} ${value} already exists`,
+        message: `${value} already exists`,
       };
 
     return { error: false };
@@ -83,7 +83,7 @@ export async function uniqueRule(
     return {
       error: true,
       type: "UNIQUE",
-      message: `${property} ${value} already exists`,
+      message: `${value} already exists`,
     };
   }
 }
@@ -126,7 +126,7 @@ export async function existsRule(
       return {
         error: true,
         type: "EXISTS",
-        message: `${property} not founds`,
+        message: `data not found`,
       };
 
     return { error: false };
@@ -134,7 +134,7 @@ export async function existsRule(
     return {
       error: true,
       type: "EXISTS",
-      message: `${property} not found`,
+      message: `data not found`,
     };
   }
 }

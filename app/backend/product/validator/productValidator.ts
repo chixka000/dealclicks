@@ -92,7 +92,19 @@ export async function productValidator(
       }),
     };
 
-    const message = {};
+    const message = {
+      categoryId: {
+        exists: "Category not found",
+        required: "Category is missing",
+      },
+      variants: {
+        media: {
+          "*": {
+            exists: "media not found",
+          },
+        },
+      },
+    };
 
     return { schema, message };
   } catch (error) {

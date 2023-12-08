@@ -29,38 +29,13 @@ export function validateType(value: any, type: DataType): boolean {
   }
 }
 
-async function singleValidatorHandler(
-  field: string,
-  data: Array<any>,
-  schema: SchemaField,
-  message?: { [key: string]: { [key: string]: string } }
-) {
-  let errors: Array<any> = [];
-  for (let index = 0; index < data.length; index++) {
-    const value = data[index];
-
-    errors = await schemaFieldValidations(field, schema, value, message);
-  }
-
-  return errors;
-}
-
-async function singleValidateMembers(
-  field: string,
-  data: Array<any>,
-  schema: SchemaField,
-  message?: any
-): Promise<Array<{ [key: string]: IRuleResponse }>> {
-  const errors = await singleValidatorHandler(field, data, schema, message);
-
-  return errors;
-}
-
 export async function validatorHandler(
   data: { [key: string]: any },
   schema: { [key: string]: SchemaField },
-  message?: { [key: string]: { [key: string]: string } }
+  message?: any
 ) {
+  // console.log();
+
   let errors: Array<{ [key: string]: IRuleResponse }> = [];
 
   for (const field in schema) {
@@ -81,21 +56,15 @@ export async function validatorHandler(
   return errors;
 }
 
-async function validateMembers(
-  data: { [key: string]: any },
-  schema: { [key: string]: SchemaField },
-  message?: any
-): Promise<Array<{ [key: string]: IRuleResponse }>> {
-  const errors = await validatorHandler(data, schema, message);
-
-  return errors;
-}
-
 async function schemaFieldValidations(
   field: string,
   fieldSchema: SchemaField,
   value: any,
-  message?: { [key: string]: { [key: string]: string } }
+  message?: {
+    [key: string]: {
+      [key: string]: string;
+    };
+  }
 ) {
   let hasError = false;
 
@@ -109,7 +78,10 @@ async function schemaFieldValidations(
     errors = addError(field, errors, {
       error: true,
       type: "REQUIRED",
-      message: message?.[field]?.required ?? `${field} is required`,
+      message:
+        message?.[field]?.required ??
+        message?.["*"]?.required ??
+        `${field} is required`,
     });
 
     hasError = true;
@@ -125,7 +97,10 @@ async function schemaFieldValidations(
     errors = addError(field, errors, {
       error: true,
       type: "VALUE_TYPE",
-      message: message?.[field]?.type ?? `${field} value is invalid`,
+      message:
+        message?.[field]?.type ??
+        message?.["*"]?.type ??
+        `${field} value is invalid`,
     });
     hasError = true;
   }
@@ -136,7 +111,10 @@ async function schemaFieldValidations(
       errors = addError(field, errors, {
         error: true,
         type: "ENUM",
-        message: message?.[field]?.type ?? `${field} has no enum list.`,
+        message:
+          message?.[field]?.type ??
+          message?.["*"]?.type ??
+          `${field} has no enum list.`,
       });
       hasError = true;
     } else if (!fieldSchema.enu.includes(value)) {
@@ -145,6 +123,7 @@ async function schemaFieldValidations(
         type: "ENUM",
         message:
           message?.[field]?.type ??
+          message?.["*"]?.type ??
           `${field} must be one of ${fieldSchema.enu.join(", ")}.`,
       });
       hasError = true;
@@ -174,7 +153,9 @@ async function schemaFieldValidations(
               errors = addError(field, errors, {
                 ...executeRule,
                 message:
-                  message?.[field]?.[rule.method] ?? executeRule?.message,
+                  message?.[field]?.[rule.method] ??
+                  message?.["*"]?.[rule.method] ??
+                  executeRule?.message,
               });
 
               hasError = true;
@@ -191,33 +172,32 @@ async function schemaFieldValidations(
   if (!hasError && fieldSchema.type === "array") {
     if (value && value.length) {
       if (fieldSchema.members) {
-        value.forEach(async (element: { [key: string]: any }) => {
-          const errorList = await validateMembers(
-            element,
-            fieldSchema.members!,
-            message?.[field]
+        for (const [index, item] of value.entries()) {
+          const itemErrors = await validatorHandler(
+            item,
+            fieldSchema.members,
+            message?.[field] ?? message?.["*"]
           );
 
-          if (errorList.length) {
-            errors = addError(field, errors, errorList);
-
+          if (itemErrors.length) {
+            errors = addError(`${field}.${index}`, errors, itemErrors);
             hasError = true;
           }
-        });
+        }
       }
 
       if (fieldSchema.member) {
-        const errorList = await singleValidateMembers(
-          field,
-          value,
-          fieldSchema.member!,
-          message?.[field]
-        );
+        for (const [index, item] of value.entries()) {
+          const itemErrors = await validatorHandler(
+            { [index]: item },
+            { [index]: fieldSchema.member },
+            message?.[field] ?? message?.["*"]
+          );
 
-        if (errorList.length) {
-          errors = addError(field, errors, errorList);
-
-          hasError = true;
+          if (itemErrors.length) {
+            errors = addError(`${field}`, errors, itemErrors);
+            hasError = true;
+          }
         }
       }
     }
@@ -226,15 +206,14 @@ async function schemaFieldValidations(
   // validate member
   if (!hasError && typeof value === "object" && fieldSchema.type === "object") {
     if (fieldSchema.members) {
-      const errorList = await validateMembers(
+      const itemErrors = await validatorHandler(
         value,
-        fieldSchema.members!,
-        message?.[field]
+        fieldSchema.members,
+        message
       );
 
-      if (errorList.length) {
-        errors = addError(field, errors, errorList);
-
+      if (itemErrors.length) {
+        errors = addError(`${field}`, errors, itemErrors);
         hasError = true;
       }
     }

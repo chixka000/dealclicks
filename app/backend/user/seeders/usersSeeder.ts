@@ -14,7 +14,7 @@ if (process.env.MONGODB_URI)
     .then(() => {
       console.log("Database connected.");
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.log("Database failed to connect. ", err.message);
     });
 
@@ -38,6 +38,8 @@ const importUser = async () => {
 
     process.exit(0);
   } catch (error) {
+    console.log(error);
+
     console.log("Seeders users failed to import.");
 
     process.exit(1);
