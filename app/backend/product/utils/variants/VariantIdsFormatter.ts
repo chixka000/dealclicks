@@ -1,5 +1,5 @@
 import { Document, Schema } from "mongoose";
-import { IVariant } from "../../interfaces/variant";
+import { IVariant } from "@/app/backend/product/interfaces/variant";
 
 export const getVariantIds = (
   variants: Array<Document & IVariant>

@@ -1,7 +1,7 @@
-import { ICategoryPayload, ICategoryValidator } from "../interfaces";
-import { Schema } from "../../shared/validator";
-import Category from "../models/category";
-import Store from "../../store/models/store";
+import { ICategoryPayload, ICategoryValidator } from "@/app/backend/category/interfaces";
+import { Schema } from "@/app/backend/shared/validator";
+import Category from "@/app/backend/category/models/category";
+import Store from "@/app/backend/store/models/store";
 
 export async function categoryValidator(
   request: NextRequest,

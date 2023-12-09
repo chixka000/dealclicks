@@ -4,8 +4,8 @@ import {
   IRulePayload,
   IRuleResponse,
   SchemaField,
-} from "../../interfaces/validator";
-import { addError } from "./errorHanlder";
+} from "@/app/backend/shared/interfaces/validator";
+import { addError } from "@/app/backend/shared/validator/rules/errorHanlder";
 
 export function validateType(value: any, type: DataType): boolean {
   switch (type) {
@@ -34,8 +34,6 @@ export async function validatorHandler(
   schema: { [key: string]: SchemaField },
   message?: any
 ) {
-  // console.log();
-
   let errors: Array<{ [key: string]: IRuleResponse }> = [];
 
   for (const field in schema) {

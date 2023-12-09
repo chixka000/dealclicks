@@ -1,1 +1,1 @@
-export * from "./variants/VariantIdsFormatter";
+export * from "@/app/backend/product/utils/variants/VariantIdsFormatter";

@@ -1,5 +1,5 @@
 import { HydratedDocument, Model, QueryWithHelpers, Schema } from "mongoose";
-import { IValidator, SchemaField } from "../../shared/interfaces/validator";
+import { SchemaField } from "@/app/backend/shared/interfaces/validator";
 
 export interface IProduct {
   name: string;

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { sendErrorResponse } from "../../shared/exception/errorResponse";
-import FileUploadService from "../../shared/services/FileUploadService";
-import FileModel from "../models/file";
+import { sendErrorResponse } from "@/app/backend/shared/exception/errorResponse";
+import FileUploadService from "@/app/backend/shared/services/FileUploadService";
+import FileModel from "@/app/backend/file/models/file";
 
 export async function upload(request: NextRequest) {
   try {

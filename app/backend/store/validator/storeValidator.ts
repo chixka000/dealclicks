@@ -1,8 +1,6 @@
-import { authorize } from "../../shared/utils/getDataFromToken";
-import { IStore, IStoreValidator } from "../interfaces";
-import { IUser } from "../../user/interfaces";
-import { Schema } from "../../shared/validator";
-import Store from "../models/store";
+import { IStore, IStoreValidator } from "@/app/backend/store/interfaces";
+import { Schema } from "@/app/backend/shared/validator";
+import Store from "@/app/backend/store/models/store";
 
 export async function storeValidator(
   request: NextRequest,

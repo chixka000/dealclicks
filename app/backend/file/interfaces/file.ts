@@ -1,7 +1,7 @@
 import mongoose, { QueryWithHelpers } from "mongoose";
 import { HydratedDocument } from "mongoose";
 import { Model } from "mongoose";
-import { NextRequest } from "next/server";
+// import { NextRequest } from "next/server";
 
 export interface IFile {
   fileName: string;

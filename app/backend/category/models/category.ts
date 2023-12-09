@@ -10,8 +10,8 @@ import {
   CategoryModelType,
   CategoryQueryHelpers,
   ICategory,
-} from "../interfaces";
-import { NextRequest } from "next/server";
+} from "@/app/backend/category/interfaces";
+// import { NextRequest } from "next/server";
 
 const categorySchema = new Schema<
   ICategory,

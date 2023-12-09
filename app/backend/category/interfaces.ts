@@ -1,6 +1,6 @@
 import { HydratedDocument, Model, QueryWithHelpers, Schema } from "mongoose";
-import { SchemaField } from "../shared/interfaces/validator";
-import { NextRequest } from "next/server";
+import { SchemaField } from "@/app/backend/shared/interfaces/validator";
+// import { NextRequest } from "next/server";
 
 export interface ICategory {
   name: string;

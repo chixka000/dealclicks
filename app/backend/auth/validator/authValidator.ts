@@ -1,5 +1,5 @@
-import { Schema } from "../../shared/validator";
-import { IAuthValidator } from "../interfaces";
+import { Schema } from "@/app/backend/shared/validator";
+import { IAuthValidator } from "@/app/backend/auth/interfaces";
 
 export function authValidator(): any {
   const schema: IAuthValidator = {

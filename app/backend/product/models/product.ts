@@ -10,7 +10,7 @@ import {
   IProduct,
   ProductModelType,
   ProductQueryHelpers,
-} from "../interfaces/product";
+} from "@/app/backend/product/interfaces/product";
 import { slugify } from "@/app/helper/formatter";
 
 const productSchema = new Schema<

@@ -1,10 +1,10 @@
-import { IProductPayload, IProductValidator } from "../interfaces/product";
-import { Schema } from "../../shared/validator";
-import Store from "../../store/models/store";
-import Product from "../models/product";
-import File from "../../file/models/file";
-import Category from "../../category/models/category";
-import Variant from "../models/variant";
+import { IProductPayload, IProductValidator } from "@/app/backend/product/interfaces/product";
+import { Schema } from "@/app/backend/shared/validator";
+import Store from "@/app/backend/store/models/store";
+import Product from "@/app/backend/product/models/product";
+import File from "@/app/backend/file/models/file";
+import Category from "@/app/backend/category/models/category";
+import Variant from "@/app/backend/product/models/variant";
 
 export async function productValidator(
   request: NextRequest,

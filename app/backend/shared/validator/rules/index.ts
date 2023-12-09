@@ -7,7 +7,12 @@ import {
   passwordRule,
   uniqueRule,
 } from "./rules";
-import { IRuleLengthParameter, IRuleQueryParameters, IRuleResponse, IRuleValueParameter } from "../../interfaces/validator";
+import {
+  IRuleLengthParameter,
+  IRuleQueryParameters,
+  IRuleResponse,
+  IRuleValueParameter,
+} from "@/app/backend/shared/interfaces/validator";
 
 export default class Rules {
   email(parameters: IRuleValueParameter): IRuleResponse {

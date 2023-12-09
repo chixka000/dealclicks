@@ -1,6 +1,6 @@
 import { sendErrorResponse } from "@/app/backend/shared/exception/errorResponse";
 import Store from "@/app/backend/store/models/store";
-import Product from "../../models/product";
+import Product from "@/app/backend/product/models/product";
 import { METASERVICE } from "@/app/backend/shared/services";
 import { NextResponse } from "next/server";
 

@@ -10,7 +10,7 @@ import {
   IVariant,
   VariantModelType,
   VariantQueryHelpers,
-} from "../interfaces/variant";
+} from "@/app/backend/product/interfaces/variant";
 import { slugify } from "@/app/helper/formatter";
 
 const variantSchema = new Schema<

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../../user/models/user";
+import User from "@/app/backend/user/models/user";
 
 export async function authorize(request: NextRequest) {
   try {

@@ -1,5 +1,5 @@
 import { Document, Model } from "mongoose";
-import { IUser } from "../../user/interfaces";
+import { IUser } from "@/app/backend/user/interfaces";
 
 type VariableType =
   | "string"
