@@ -1,5 +1,5 @@
 import "./style/globals.css";
-import DefaultLayout from "./layout/DefaultLayout";
+import DefaultLayout from "./components/layout/DefaultLayout";
 
 export default function RootLayout(props: {
   children:
