@@ -18,6 +18,7 @@ const config: Config = {
       },
       fontFamily: {
         void: ["Void"],
+        wix: ["Wix Madefor Display"],
       },
     },
   },

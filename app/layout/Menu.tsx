@@ -39,31 +39,21 @@ export const Menu = () => {
               <li key={index}>
                 <Link
                   href={item.url}
-                  className="font-bold text-3xl text-dark-theme hover:text-light-theme text-[15px]"
+                  className="font-bold text-2xl text-dark-theme hover:text-light-theme"
                 >
                   {item.name}
                 </Link>
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-4">
-            <div className="rounded-full shadow-lg mx-auto duration-1000 bg-gradient-to-r p-[6px] hover:from-[#04c3fd] from-light-theme hover:via-[#9333EA] via-none  hover:to-[#263852] to-dark-theme">
-              <div className="flex flex-col justify-between h-full bg-white text-white rounded-full">
-                <button
-                  onClick={handleShow}
-                  className="  text-dark-theme p-2 rounded-full"
-                >
-                  <LuSearch size={20} />
-                </button>
-              </div>
-            </div>
-            <div className="rounded-full shadow-lg mx-auto duration-300 bg-gradient-to-r p-[6px] hover:from-[#04c3fd] from-light-theme hover:via-[#9333EA] via-none  hover:to-[#263852] to-dark-theme">
-              <div className="flex flex-col justify-between h-full bg-white text-white rounded-full">
-                <button className="text-dark-theme py-1 px-6 duration-300 rounded-3xl text-2xl tracking-wider font-bold">
-                  {"Let's Talk"}
-                </button>
-              </div>
-            </div>
+          <div className="flex items-center gap-4 border-2 border-dark-theme rounded-full px-4">
+            <input type="text" className="outline-none" />
+            <button
+              onClick={handleShow}
+              className="text-dark-theme p-2 rounded-full"
+            >
+              <LuSearch size={25} />
+            </button>
           </div>
         </section>
         <div
@@ -76,7 +66,7 @@ export const Menu = () => {
                   <li className="max-lg:py-2" key={index}>
                     <Link
                       href={item.url}
-                      className="lg:hover:text-light-theme font-bold text-dark-theme text-[20px] block tracking-wider"
+                      className="lg:hover:text-light-theme font-base text-dark-theme text-[17px] block tracking-wider"
                     >
                       {item.name}
                     </Link>

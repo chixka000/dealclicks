@@ -14,7 +14,7 @@ export default function RootLayout(props: {
 }) {
   return (
     <html lang="en">
-      <body className="font-void">
+      <body className="font-wix">
         <DefaultLayout>{props.children}</DefaultLayout>
       </body>
     </html>
