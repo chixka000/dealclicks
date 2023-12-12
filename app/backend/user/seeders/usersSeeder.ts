@@ -38,7 +38,6 @@ const importUser = async () => {
 
     process.exit(0);
   } catch (error) {
-    console.log(error);
 
     console.log("Seeders users failed to import.");
 

@@ -63,9 +63,9 @@ export async function login(request: NextRequest) {
 export async function me(request: NextRequest) {
   try {
     // get the users information
-    const user = await User.findOne({ email: request.user.email })
-      .populate("stores")
-      .select("-password");
+    const user = await User.findOne({ email: request.user.email }).select(
+      "-password"
+    );
 
     // return success response
     return NextResponse.json({ user }, { status: 200 });

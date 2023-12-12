@@ -8,6 +8,7 @@ export default function InputCheckbox({
   onChange = () => {},
   id,
   name,
+  checked,
 }: InputCheckboxProps) {
   return (
     <div className={`flex gap-2 items-center ${wrapperClass ?? ""}`}>
@@ -15,7 +16,8 @@ export default function InputCheckbox({
         type="checkbox"
         id={`cb-${id ?? name}`}
         className={inputClass ?? ""}
-        onChange={onChange}
+        onChange={(e) => onChange(e.target.checked, name)}
+        checked={checked}
       />
 
       <label

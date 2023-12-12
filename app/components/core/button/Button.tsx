@@ -6,6 +6,7 @@ export default function Button({
   label,
   onClick = () => {},
   id,
+  type,
 }: ButtonProps) {
   return (
     <div className={wrapperClass ?? ""}>
@@ -13,6 +14,7 @@ export default function Button({
         id={`btn-${id ?? label}`}
         className={buttonClass ?? ""}
         onClick={onClick}
+        type={type}
       >
         {label ?? ""}
       </button>
