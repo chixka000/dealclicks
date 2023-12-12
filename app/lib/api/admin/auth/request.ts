@@ -1,4 +1,4 @@
-import { LoginPayloadProps } from "@/app/interfaces/interface";
+import { LoginPayloadProps } from "@/app/interfaces/auth/interface";
 import BaseAPI from "../_base.api";
 
 export default class AUTHAPI {

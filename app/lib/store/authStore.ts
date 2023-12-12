@@ -1,4 +1,7 @@
-import { AuthStoreProps, LoginPayloadProps } from "@/app/interfaces/interface";
+import {
+  AuthStoreProps,
+  LoginPayloadProps,
+} from "@/app/interfaces/auth/interface";
 import { ChangeEvent, FormEvent } from "react";
 import { create } from "zustand";
 import AUTHAPI from "../api/admin/auth/request";
@@ -15,7 +18,7 @@ const useAuthStore = create<AuthStoreProps>((set, get) => ({
 
       return response;
     } catch (error) {
-      throw error
+      throw error;
     }
   },
   onChangeHandler: (

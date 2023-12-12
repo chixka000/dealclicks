@@ -1,5 +1,6 @@
 import { AxiosResponse } from "axios";
 import { ChangeEvent, FormEvent } from "react";
+import { IUser } from "../../backend/user/interfaces";
 
 export interface LoginPayloadProps {
   email?: string;

@@ -1,13 +1,17 @@
 "use client";
 import { useRouter } from "next/navigation";
 import AUTHAPI from "../lib/api/admin/auth/request";
+import useUserProfile from "../lib/store/userProfile";
 
 export default function Home() {
   const router = useRouter();
 
-  const { data, error } = AUTHAPI.meSWR("", {
-    onError: (error: any) => {
+  AUTHAPI.meSWR("", {
+    onError: () => {
       router.push("/admin/login");
+    },
+    onSuccess: (response: any) => {
+      useUserProfile.setState({ user: response?.data?.user });
     },
   });
 

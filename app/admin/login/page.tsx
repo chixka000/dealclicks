@@ -2,13 +2,15 @@
 
 import LoginForm from "@/app/components/form/LoginForm";
 import AUTHAPI from "@/app/lib/api/admin/auth/request";
+import useUserProfile from "@/app/lib/store/userProfile";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
   const router = useRouter();
 
   AUTHAPI.meSWR("", {
-    onSuccess: () => {
+    onSuccess: (response: any) => {
+      useUserProfile.setState({ user: response?.data?.user });
       router.push("/admin");
     },
   });
