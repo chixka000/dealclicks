@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { authValidator } from "../validator/authValidator";
-import { sendErrorResponse } from "../../shared/exception/errorResponse";
-import User from "../../user/models/user";
+import { authValidator } from "@/app/backend/auth/validator/authValidator";
+import { sendErrorResponse } from "@/app/backend/shared/exception/errorResponse";
+import User from "@/app/backend/user/models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { authorize } from "../../shared/utils/getDataFromToken";
-import { validate } from "../../shared/validator";
+import { validate } from "@/app/backend/shared/validator";
 
 export async function login(request: NextRequest) {
   try {
@@ -64,9 +63,9 @@ export async function login(request: NextRequest) {
 export async function me(request: NextRequest) {
   try {
     // get the users information
-    const user = await User.findOne({ email: request.user.email })
-      .populate("stores")
-      .select("-password");
+    const user = await User.findOne({ email: request.user.email }).select(
+      "-password"
+    );
 
     // return success response
     return NextResponse.json({ user }, { status: 200 });

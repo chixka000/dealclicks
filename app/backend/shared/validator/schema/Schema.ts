@@ -3,7 +3,7 @@ import {
   ISchema,
   ISchemaStringParameters,
   ISchemaArrayAndObjectParameters,
-} from "../../interfaces/validator";
+} from "@/app/backend/shared/interfaces/validator";
 
 const Schema: ISchema = {
   String(parameters: ISchemaStringParameters) {

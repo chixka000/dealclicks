@@ -1,6 +1,4 @@
-import { sendErrorResponse } from "../exception/errorResponse";
-import { ControllerMethod } from "../interfaces/middleware";
-import { authorize } from "../utils/getDataFromToken";
+import { authorize } from "@/app/backend/shared/utils/getDataFromToken";
 
 export async function authMiddleware(
   request: NextRequest,

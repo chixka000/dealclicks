@@ -6,7 +6,11 @@ import {
   model,
   models,
 } from "mongoose";
-import { IStore, StoreModelType, StoreQueryHelpers } from "../interfaces";
+import {
+  IStore,
+  StoreModelType,
+  StoreQueryHelpers,
+} from "@/app/backend/store/interfaces";
 
 const storeSchema = new Schema<
   IStore,

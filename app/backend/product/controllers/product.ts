@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
-import { sendErrorResponse } from "../../shared/exception/errorResponse";
-import { validate } from "../../shared/validator";
-import { productValidator } from "../validator/productValidator";
-import Product from "../models/product";
-import { VARIANTSERVICE } from "../services";
+import { sendErrorResponse } from "@/app/backend/shared/exception/errorResponse";
+import { validate } from "@/app/backend/shared/validator";
+import { productValidator } from "@/app/backend/product/validator/productValidator";
+import Product from "@/app/backend/product/models/product";
+import { VARIANTSERVICE } from "@/app/backend/product/services";
 import mongoose from "mongoose";
-import MetaService from "../../shared/services/MetaService";
-import { METASERVICE } from "../../shared/services";
+import { METASERVICE } from "@/app/backend/shared/services";
 
 export async function create(request: NextRequest) {
   const session = await mongoose.startSession();
@@ -140,12 +139,7 @@ export async function index(
       .paginate(cursor, limit);
 
     // get meta
-    const meta = await METASERVICE.getMeta(
-      Product,
-      products,
-      filters,
-      limit
-    );
+    const meta = await METASERVICE.getMeta(Product, products, filters, limit);
 
     // const total = await Product.countDocuments(filters);
     // const totalPages = Math.ceil(total / limit);

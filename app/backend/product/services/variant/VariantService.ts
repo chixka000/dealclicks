@@ -1,8 +1,8 @@
 import mongoose, { Document } from "mongoose";
-import { IVariant } from "../../interfaces/variant";
-import Variant from "../../models/variant";
-import { IProduct } from "../../interfaces/product";
-import { getVariantIds } from "../../utils";
+import { IVariant } from "@/app/backend/product/interfaces/variant";
+import Variant from "@/app/backend/product/models/variant";
+import { IProduct } from "@/app/backend/product/interfaces/product";
+import { getVariantIds } from "@/app/backend/product/utils";
 import { slugify } from "@/app/helper/formatter";
 
 export default class VariantService {

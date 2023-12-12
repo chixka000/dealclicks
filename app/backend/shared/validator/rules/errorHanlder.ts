@@ -1,4 +1,4 @@
-import { IRuleResponse } from "../../interfaces/validator";
+import { IRuleResponse } from "@/app/backend/shared/interfaces/validator";
 
 export function addError(
   field: string,

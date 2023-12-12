@@ -1,4 +1,4 @@
-import MetaService from "./MetaService";
+import MetaService from "@/app/backend/shared/services/MetaService";
 
 const METASERVICE = new MetaService();
 

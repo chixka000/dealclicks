@@ -1,6 +1,6 @@
 import { Schema, Document, model, models } from "mongoose";
 import bcrypt from "bcrypt";
-import { IUser } from "../interfaces";
+import { IUser } from "@/app/backend/user/interfaces";
 const SALT = 10;
 
 const userSchema = new Schema<IUser>(

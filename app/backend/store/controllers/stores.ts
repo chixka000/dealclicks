@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
-import { sendErrorResponse } from "../../shared/exception/errorResponse";
-import { storeValidator } from "../validator/storeValidator";
-import StoreService from "../services/storeService";
-import Store from "../models/store";
+import { storeValidator } from "@/app/backend/store/validator/storeValidator";
+import StoreService from "@/app/backend/store/services/storeService";
+import Store from "@/app/backend/store/models/store";
 import { slugify } from "@/app/helper/formatter";
-import { validate } from "../../shared/validator";
-// import { INextRequest } from "../../shared/interfaces/request";
+import { validate } from "@/app/backend/shared/validator";
+import { startSession } from "mongoose";
+import { sendErrorResponse } from "@/app/backend/shared/exception/errorResponse";
 
 export async function create(request: NextRequest) {
+  const session = await startSession();
+  session.startTransaction();
+
   try {
     // validate request body
     const data = await validate(request, storeValidator);
@@ -16,14 +19,18 @@ export async function create(request: NextRequest) {
     const storeService = new StoreService();
 
     // call createStore method of StoreService to create document in the Store collection
-    const store = await storeService.createStore(data, request);
+    const store = await storeService.createStore(data, request, session);
 
+    // Commit the transaction if no error
+    await session.commitTransaction();
     // return success response
     return NextResponse.json(
       { message: "Created successfully", store },
       { status: 201 }
     );
   } catch (error: any) {
+    // abort transaction
+    await session.abortTransaction();
     // return error response
     return sendErrorResponse(error);
   }
@@ -128,6 +135,8 @@ export async function destroy(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await startSession();
+  session.startTransaction();
   try {
     // get the route paramater id
     const { id } = params;
@@ -136,7 +145,10 @@ export async function destroy(
     const storeService = new StoreService();
 
     // call StoreService's deleteStore method to deleted the document in the collection
-    await storeService.deleteStore(id, request);
+    await storeService.deleteStore(id, request, session);
+
+    // commit transaction if no errors
+    await session.commitTransaction();
 
     // return success response
     return NextResponse.json(
@@ -144,6 +156,8 @@ export async function destroy(
       { status: 200 }
     );
   } catch (error: any) {
+    // abort transaction
+    await session.abortTransaction();
     // return error response
     return sendErrorResponse(error);
   }

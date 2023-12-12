@@ -7,7 +7,7 @@ import {
   models,
 } from "mongoose";
 import { NextRequest } from "next/server";
-import { FileModelType, FileQueryHelpers, IFile } from "../interfaces/file";
+import { FileModelType, FileQueryHelpers, IFile } from "@/app/backend/file/interfaces/file";
 
 const fileSchema = new Schema<
   IFile,

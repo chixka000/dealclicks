@@ -1,4 +1,4 @@
-import VariantService from "./variant/VariantService";
+import VariantService from "@/app/backend/product/services/variant/VariantService";
 
 const VARIANTSERVICE = new VariantService();
 

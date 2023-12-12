@@ -1,5 +1,5 @@
-import SchemaValidator from "./SchemaValidator";
-import { Schema } from "./schema/Schema";
+import SchemaValidator from "@/app/backend/shared/validator/SchemaValidator";
+import { Schema } from "@/app/backend/shared/validator/schema/Schema";
 
 const schemaValidator = new SchemaValidator();
 

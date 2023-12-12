@@ -34,8 +34,6 @@ const STATUSCODES = {
 
 // status = response code, body = response body/message (can be set to undefined)
 export function sendErrorResponse(error: any) {
-  console.log(error);
-
   return NextResponse.json(
     {
       ...STATUSCODES?.[error?.code as keyof typeof STATUSCODES],

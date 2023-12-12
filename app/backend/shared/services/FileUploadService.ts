@@ -1,12 +1,12 @@
-import { IImageExtensions } from "../interfaces/file";
+import { IImageExtensions } from "@/app/backend/shared/interfaces/file";
 import { readFile, writeFile, unlink } from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 import { v4 as uuidV4 } from "uuid";
-import { bulkUpload, destroy, uploads } from "../config/cloudinary";
-import File from "../../file/models/file";
-import { IUser } from "../../user/interfaces";
-import { IFile } from "../../file/interfaces/file";
+import { bulkUpload, destroy, uploads } from "@/app/backend/shared/config/cloudinary";
+import File from "@/app/backend/file/models/file";
+import { IUser } from "@/app/backend/user/interfaces";
+import { IFile } from "@/app/backend/file/interfaces/file";
 
 export default class FileUploadService {
   async ImageConversion(

@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { sendErrorResponse } from "../../shared/exception/errorResponse";
-import { categoryValidator } from "../validator/categoryValidator";
-import Category from "../models/category";
+import { sendErrorResponse } from "@/app/backend/shared/exception/errorResponse";
+import { categoryValidator } from "@/app/backend/category/validator/categoryValidator";
+import Category from "@/app/backend/category/models/category";
 import { ObjectId } from "mongoose";
-import { validate } from "../../shared/validator";
-import { ICategory } from "../interfaces";
+import { validate } from "@/app/backend/shared/validator";
+import { ICategory } from "@/app/backend/category/interfaces";
 
 export async function store(request: NextRequest) {
   try {

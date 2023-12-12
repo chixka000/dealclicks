@@ -1,5 +1,5 @@
-import mongoose, { Document, Model, models } from "mongoose";
-import { IRuleResponse } from "../../interfaces/validator";
+import { Document, Model } from "mongoose";
+import { IRuleResponse } from "@/app/backend/shared/interfaces/validator";
 
 export function emailRule(value: string): IRuleResponse {
   if (!value)
@@ -54,15 +54,6 @@ export async function uniqueRule(
         message: `Model not found.`,
       };
 
-    // const modelInstance = models[model];
-
-    // if (!modelInstance)
-    //   return {
-    //     error: true,
-    //     type: "UNIQUE",
-    //     message: `Model not found.`,
-    //   };
-
     let query = { [property]: value };
 
     if (where) query = { ...query, ...where };
@@ -75,7 +66,7 @@ export async function uniqueRule(
       return {
         error: true,
         type: "UNIQUE",
-        message: `${property} ${value} already exists`,
+        message: `${value} already exists`,
       };
 
     return { error: false };
@@ -83,7 +74,7 @@ export async function uniqueRule(
     return {
       error: true,
       type: "UNIQUE",
-      message: `${property} ${value} already exists`,
+      message: `${value} already exists`,
     };
   }
 }
@@ -103,15 +94,6 @@ export async function existsRule(
         message: `${model} Model not found.`,
       };
 
-    // const modelInstance = models[model];
-
-    // if (!modelInstance)
-    //   return {
-    //     error: true,
-    //     type: "EXISTS",
-    //     message: `${model} Model not found.`,
-    // };
-
     let query = {};
 
     if (!where && !whereNot) query = { _id: value };
@@ -126,7 +108,7 @@ export async function existsRule(
       return {
         error: true,
         type: "EXISTS",
-        message: `${property} not founds`,
+        message: `data not found`,
       };
 
     return { error: false };
@@ -134,7 +116,7 @@ export async function existsRule(
     return {
       error: true,
       type: "EXISTS",
-      message: `${property} not found`,
+      message: `data not found`,
     };
   }
 }
