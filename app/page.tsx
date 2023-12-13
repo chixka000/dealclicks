@@ -40,7 +40,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex justify-between items-center text-2xl bg-black rounded-b-3xl px-16 py-8 text-white bg-gradient-to-r from-dark-theme to-light-theme shadow-2xl">
-            <span>Click our latest update's!</span>
+            <span>{`Click our latest update's!`}</span>
             <button className="flex gap-4 items-center border-2 border-white py-4 px-8 rounded-full text-lg font-bold">
               Click Me! <FaArrowRight />
             </button>
