@@ -126,3 +126,9 @@ body {
   --tw-shadow-color: #04c3fd;
   --tw-shadow: var(--tw-shadow-colored);
 }
+.brand-text-gradient {
+  background: linear-gradient(89deg, #fe31c1 7.16%, #fe9926 79.03%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
