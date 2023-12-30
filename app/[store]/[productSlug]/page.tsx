@@ -51,7 +51,7 @@ const products: Product[] = [
 
 const getProductsList = async () => {
   const res = await fetch("https://jsonplaceholder.typicode.com/todos", {
-    cache: "no-store" // To Disable Static Prop Caching
+    next: { revalidate: 10 } // Refetch Every 10 secs 
   });
   return res.json();
 };
