@@ -48,7 +48,13 @@ const products: Product[] = [
   }
   // ... more products
 ];
-const ProductsPage = ({
+
+const getProductsList = async () => {
+  const res = await fetch("https://jsonplaceholder.typicode.com/todos");
+  return res.json();
+};
+
+const ProductsPage = async ({
   params
 }: {
   params: { store: string; productSlug: string };
@@ -63,6 +69,7 @@ const ProductsPage = ({
   };
   const storeName = capitalizeSlug(store);
   const productCategory = capitalizeSlug(productSlug);
+  const productsList = await getProductsList();
   return (
     <div className="bg-white p-4">
       <header className="text-2xl font-bold my-5 text-center">
@@ -70,36 +77,9 @@ const ProductsPage = ({
         {productCategory}
       </header>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map(product => (
-          <div key={product.id} className="border p-4 rounded-lg shadow-md">
-            <div className="mb-2">
-              <div className="relative w-full h-0 pb-[60%]">
-                {/* Adjust the padding-bottom value based on the aspect ratio */}
-                <Image
-                  src={noImage}
-                  alt={product.name}
-                  layout="fill" // Use the "fill" layout
-                  objectFit="cover" // This will cover the area of the parent container without stretching the image
-                  className="rounded-lg"
-                />
-              </div>
-            </div>
-            <div className="flex justify-between items-baseline mb-4">
-              <h3 className="text-lg font-semibold">{product.name}</h3>
-              <span className="text-lg font-semibold text-gray-900">
-                ${product.price.toFixed(2)}
-              </span>
-            </div>
-            <p className="text-sm text-gray-700 mb-4">{product.description}</p>
-            <div className="text-right">
-              <span
-                className={product.inStock ? "text-green-500" : "text-red-500"}
-              >
-                {product.inStock ? "In Stock" : "Out of Stock"}
-              </span>
-            </div>
-          </div>
-        ))}
+        {productsList.map((product: any) => {
+          return <p>{product.title}</p>
+        })}
       </div>
     </div>
   );
