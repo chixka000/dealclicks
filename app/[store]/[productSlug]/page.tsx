@@ -50,7 +50,9 @@ const products: Product[] = [
 ];
 
 const getProductsList = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/todos");
+  const res = await fetch("https://jsonplaceholder.typicode.com/todos", {
+    cache: "no-store" // To Disable Static Prop Caching
+  });
   return res.json();
 };
 
@@ -78,7 +80,7 @@ const ProductsPage = async ({
       </header>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {productsList.map((product: any) => {
-          return <p>{product.title}</p>
+          return <p>{product.title}</p>;
         })}
       </div>
     </div>
